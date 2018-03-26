@@ -5,7 +5,6 @@ function [grad_b, grad_W] = ComputeGradsNum(X, Y, W, b, lambda, h)
 
   grad_W = zeros(size(W));
   grad_b = zeros(no, 1);
-
   c = ComputeCost(X, Y, W, b, lambda);
 
   for i=1:length(b)

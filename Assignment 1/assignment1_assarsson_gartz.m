@@ -5,6 +5,7 @@
 ## Author: Fabian Assarsson & Madeleine Gartz
 ## Date: 2018-03-25
 
+rand('state',1);
 % First we start with looking at some of the images from the dataset:
 addpath Datasets/cifar-10-batches-mat/; % adds our path to data
 A = load('data_batch_1.mat'); % loads a saved datafile with examples as rows in A
@@ -19,6 +20,7 @@ montage(I(:,:,:,1:500), 'Size', [5,5]); % We display it with our helper function
 d = 32*32*3;
 N = 10000;
 K = 10;
+lambda = 0.01;
 function [X, Y, y] = LoadBatch(filename)
   inputFile = load(filename); %we load the file
   X = im2double(inputFile.data'); %octave function that converts an image to doubles.
@@ -81,20 +83,20 @@ function P = EvaluateClassifier(X, W, b)
   return;
 endfunction
 
-P = EvaluateClassifier(X(:,1:100), W, b);
-disp("EvaluateClassifier can run on 100 examples: "), disp(size(P)(2) == 100 );
+P = EvaluateClassifier(X, W, b);
+disp("EvaluateClassifier can run on 10000 examples: "), disp(size(P));
 
 % We write the cost function as given in the assignment, with cross entropy loss
 % and l2 regularization. Y'*P.. comes from that we have a one-hot representation
 % of our examples. The products is zero for all 0-elements but 1*probOfClass for the
 % correct guess. We therefore optimize by encouraging the correct class to have high prob.
 
-function J = ComputeCost(X, Y, W, b, lambda = 0.01)
+function J = ComputeCost(X, Y, W, b, lambda)
   P = EvaluateClassifier(X, W, b);
-  J = 1/columns(X)*sum(-log(Y'*P)) + lambda*sum(sum(W.**2));
+  J = (1/columns(X))*sum(-log(diag(Y'*P))) + lambda*sum(sum(W.**2));
   return;
 endfunction
-J = ComputeCost(X, Y, W, b);
+J = ComputeCost(X, Y, W, b, lambda);
 % We write the accuracy function as one that calculates all our probabilities
 % then pick out the highest prob from each example and count all that is correct labels
 % we then divide by the size of our dataset and return the percentage as a fraction.
@@ -111,10 +113,41 @@ disp("check that acc is in bounds: "),disp(0 <= acc & acc <= 1);
 
 
 % Now we need to compute our gradients according to the backprop algorithm
-function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, lambda = 0.1)
-  % Do something in here!
+function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, lambda)
+  % Below needs to be checked, with an additional derivation. A tired attempt :P!
   grad_W = zeros(rows(W), columns(W));
   grad_b = zeros(rows(W), 1);
+  for i=1:columns(X)
+    x = X(:,i);
+    y = Y(:,i);
+    p = P(:,i);
+    g = y'/(y'*p)*(diag(p)-p*p');
+    grad_b = grad_b + g';
+    grad_W = grad_W + g'*x';
+  endfor
+  grad_b = grad_b/columns(X);
+  grad_W = grad_W/columns(X) + 2*lambda*W;
 
   return;
 endfunction
+
+% Here we are introducing a resizing function to more quickly adapt our gradient checking.
+function [X,Y,y,W] = Resize(X,Y,y,W, size = 32, dimension = 1000)
+  X = X(1:dimension,1:size);
+  Y = Y(:,1:size);
+  y = y(1:size,:);
+  W = W(:,1:dimension);
+  return
+endfunction
+
+% first we resize the vectors
+[X, Y, y,W] = Resize(X,Y,y, W);
+% we evaluate again to ensure P is of right size
+P = EvaluateClassifier(X, W, b);
+% We compute our tired try of gradients
+lambda = 0;
+[grad_W_analytic, grad_b_analytic] = ComputeGradients(X, Y, P, W, lambda);
+% We compute the fast numerical approximation (might wanna test the slow one!)
+[grad_b_numerical, grad_W_numerical] = ComputeGradsNum(X, Y, W, b, lambda, 1e-6);
+% we display the differences. The diagonal is one, and I have no idea any more. Good night.
+disp(abs(grad_W_analytic .- grad_W_numerical)/max(1e-9, abs(grad_W_analytic) .+ abs(grad_W_analytic)));
