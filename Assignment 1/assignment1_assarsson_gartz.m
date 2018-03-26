@@ -52,7 +52,7 @@ function [W, b] = Initialize(K, d, initType)
   end
 endfunction
 
-[W, b] = Initialize(K, d, 'xavier');
+[W, b] = Initialize(K, d);
 
 disp("Is W the correct shape: "),disp(size(W) == [K,d]);
 disp("Is B the correct shape: "),disp(size(b) == [K,1]);
@@ -68,6 +68,7 @@ function p = Softmax(s)
   p = exp(s) ./ sum(exp(s));
   return;
 endfunction
+
 p = Softmax(W*X+b); %broadcasted rendition
 disp("Softmax outputs correct shape: "),disp(size(p) == [K,N]);
 
@@ -84,14 +85,16 @@ P = EvaluateClassifier(X(:,1:100), W, b);
 disp("EvaluateClassifier can run on 100 examples: "), disp(size(P)(2) == 100 );
 
 % We write the cost function as given in the assignment, with cross entropy loss
-% and l2 regularization. Y'*Eval.. comes from that we have a one-hot representation
-% of our examples.
+% and l2 regularization. Y'*P.. comes from that we have a one-hot representation
+% of our examples. The products is zero for all 0-elements but 1*probOfClass for the
+% correct guess. We therefore optimize by encouraging the correct class to have high prob.
 
 function J = ComputeCost(X, Y, W, b, lambda = 0.01)
-  J = 1/columns(X)*sum(-log(Y'*EvaluateClassifier(X, W, b))) + lambda*sum(sum(W.**2));
+  P = EvaluateClassifier(X, W, b);
+  J = 1/columns(X)*sum(-log(Y'*P)) + lambda*sum(sum(W.**2));
   return;
 endfunction
-
+J = ComputeCost(X, Y, W, b);
 % We write the accuracy function as one that calculates all our probabilities
 % then pick out the highest prob from each example and count all that is correct labels
 % we then divide by the size of our dataset and return the percentage as a fraction.
@@ -108,7 +111,7 @@ disp("check that acc is in bounds: "),disp(0 <= acc & acc <= 1);
 
 
 % Now we need to compute our gradients according to the backprop algorithm
-function [grad_W, grad_b] = ComputeGradients(X, Y, P, W; lambda = 0.1)
+function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, lambda = 0.1)
   % Do something in here!
   grad_W = zeros(rows(W), columns(W));
   grad_b = zeros(rows(W), 1);
