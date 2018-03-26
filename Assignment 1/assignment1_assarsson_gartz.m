@@ -91,3 +91,18 @@ function J = ComputeCost(X, Y, W, b, lambda = 0.01)
   J = 1/columns(X)*sum(-log(Y'*EvaluateClassifier(X, W, b))) + lambda*sum(sum(W.**2));
   return;
 endfunction
+
+% We write the accuracy function as one that calculates all our probabilities
+% then pick out the highest prob from each example and count all that is correct labels
+% we then divide by the size of our dataset and return the percentage as a fraction.
+function acc = ComputeAccuracy(X, y, W, b)
+  p = EvaluateClassifier(X, W, b);
+  [pmax, pmaxidx] = max(p);
+  correctLabels = sum(pmaxidx' == y);
+  acc = correctLabels/columns(X);
+  return;
+endfunction
+
+acc = ComputeAccuracy(X, y, W, b);
+disp(acc);
+disp("check that acc is in bounds: "),disp(0 <= acc & acc <= 1);
