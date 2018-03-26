@@ -1,9 +1,9 @@
-% Information: This program follows the instruction for lab 1 in the Masters Course
-% of Deep Learning at the Royal Institute of Technology. It is a multi-class one-layer
-% neural network trained with mini-batch gradient descent on both a cross-entropy-loss
-% against a softmax output, as well as a SVM multi-class loss.
-% Authors: Fabian Assarsson & Madeleine Gartz
-% Date: 2018-03-25
+## Information: This program follows the instruction for lab 1 in the Masters Course
+## of Deep Learning at the Royal Institute of Technology. It is a multi-class one-layer
+## neural network trained with mini-batch gradient descent on both a cross-entropy-loss
+## against a softmax output, as well as a SVM multi-class loss.
+## Author: Fabian Assarsson & Madeleine Gartz
+## Date: 2018-03-25
 
 % First we start with looking at some of the images from the dataset:
 addpath Datasets/cifar-10-batches-mat/; % adds our path to data
@@ -40,14 +40,14 @@ disp("is y correct shape: "),disp(size(y) == [N,1]);
 % with 0.1 variance. W = (K*d), b = (K*1).
 
 function [W, b] = initialize(K, d, initType)
-  if nargin < 3
-    W = randn(K,d)*sqrt(0.1);
-    b = randn(K,1)*sqrt(0.1);
+  if nargin < 3 % this check if we have given "initType" as an argument
+    W = randn(K,d)*sqrt(0.1); %classic gaussian with zero mean and 0.1 variance
+    b = randn(K,1)*sqrt(0.1); %classic gaussian with zero mean and 0.1 variance
     return;
   end
   if initType == 'xavier'
-    W = randn(K,d)*sqrt(1/d);
-    b = randn(K,1)*sqrt(1/d);
+    W = randn(K,d)*sqrt(1/d); %initialized as xavier with 1/N as variance
+    b = randn(K,1)*sqrt(1/d); %could be 2/(N_in+N_out), but it's debated.
     return;
   end
 endfunction
