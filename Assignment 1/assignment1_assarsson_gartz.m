@@ -71,9 +71,9 @@ endfunction
 p = Softmax(W*X+b); %broadcasted rendition
 disp("Softmax outputs correct shape: "),disp(size(p) == [K,N]);
 
-%We define an evaluation function that utilizes broadcasting
-%That is, b takes on the shape of (K,N) for the sake for our affine
-%transformation.
+% We define an evaluation function that utilizes broadcasting
+% That is, b takes on the shape of (K,N) for the sake for our affine
+% transformation.
 function P = EvaluateClassifier(X, W, b)
   s = W*X+b;
   P = Softmax(s);
@@ -82,3 +82,12 @@ endfunction
 
 P = EvaluateClassifier(X(:,1:100), W, b);
 disp("EvaluateClassifier can run on 100 examples: "), disp(size(P)(2) == 100 );
+
+% We write the cost function as given in the assignment, with cross entropy loss
+% and l2 regularization. Y'*Eval.. comes from that we have a one-hot representation
+% of our examples.
+
+function J = ComputeCost(X, Y, W, b, lambda = 0.01)
+  J = 1/columns(X)*sum(-log(Y'*EvaluateClassifier(X, W, b))) + lambda*sum(sum(W.**2));
+  return;
+endfunction
