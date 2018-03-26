@@ -39,7 +39,7 @@ disp("is y correct shape: "),disp(size(y) == [N,1]);
 % a initialization type as argument, if none is given it initializes as a zero-mean gaussian
 % with 0.1 variance. W = (K*d), b = (K*1).
 
-function [W, b] = initialize(K, d, initType)
+function [W, b] = Initialize(K, d, initType)
   if nargin < 3 % this check if we have given "initType" as an argument
     W = randn(K,d)*sqrt(0.1); %classic gaussian with zero mean and 0.1 variance
     b = randn(K,1)*sqrt(0.1); %classic gaussian with zero mean and 0.1 variance
@@ -52,7 +52,7 @@ function [W, b] = initialize(K, d, initType)
   end
 endfunction
 
-[W, b] = initialize(K, d, 'xavier');
+[W, b] = Initialize(K, d, 'xavier');
 
 disp("Is W the correct shape: "),disp(size(W) == [K,d]);
 disp("Is B the correct shape: "),disp(size(b) == [K,1]);
@@ -63,10 +63,22 @@ disp("The variance of W is:"), disp(mean(var(W, 0, 2)));
 % Now we define a separate softmax-function that includes considerations for
 % numerical stability w.r.t potentially large exponents.
 % s as input is W*X + b, (K,d)*(d,N) + (K,1)
-function [p] = softmax(s)
+function p = Softmax(s)
   s -= max(s);
   p = exp(s) ./ sum(exp(s));
   return;
 endfunction
-p = softmax(W*X+b); %broadcasted rendition
+p = Softmax(W*X+b); %broadcasted rendition
 disp("Softmax outputs correct shape: "),disp(size(p) == [K,N]);
+
+%We define an evaluation function that utilizes broadcasting
+%That is, b takes on the shape of (K,N) for the sake for our affine
+%transformation.
+function P = EvaluateClassifier(X, W, b)
+  s = W*X+b;
+  P = Softmax(s);
+  return;
+endfunction
+
+P = EvaluateClassifier(X(:,1:100), W, b);
+disp("EvaluateClassifier can run on 100 examples: "), disp(size(P)(2) == 100 );
