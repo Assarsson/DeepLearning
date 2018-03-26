@@ -30,5 +30,32 @@ endfunction
 
 %Test if it works:
 [X,Y,y] = LoadBatch('data_batch_1.mat');
+
 disp("is X correct shape: "),disp(size(X) == [d, N]);
 disp("is Y correct shape: "),disp(size(Y) == [K,N]);
+disp("is y correct shape: "),disp(size(y) == [N,1]);
+
+% Now we want to initialize the models parameters. We directly write a function that can take
+% a initialization type as argument, if none is given it initializes as a zero-mean gaussian
+% with 0.1 variance. W = (K*d), b = (K*1).
+
+function [W, b] = initialize(K, d, initType)
+  if nargin < 3
+    W = randn(K,d)*sqrt(0.1);
+    b = randn(K,1)*sqrt(0.1);
+    return;
+  end
+  if initType == 'xavier'
+    W = randn(K,d)*sqrt(1/d);
+    b = randn(K,1)*sqrt(1/d);
+    return;
+  end
+endfunction
+
+[W, b] = initialize(K, d, 'xavier');
+
+disp("Is W the correct shape: "),disp(size(W) == [K,d]);
+disp("Is B the correct shape: "),disp(size(b) == [K,1]);
+disp("xavier variance should be: "),disp(1/d);
+disp("gaussian variance should be: "),disp(0.1);
+disp("The variance of W is:"), disp(mean(var(W, 0, 2)));
