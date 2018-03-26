@@ -104,5 +104,14 @@ function acc = ComputeAccuracy(X, y, W, b)
 endfunction
 
 acc = ComputeAccuracy(X, y, W, b);
-disp(acc);
 disp("check that acc is in bounds: "),disp(0 <= acc & acc <= 1);
+
+
+% Now we need to compute our gradients according to the backprop algorithm
+function [grad_W, grad_b] = ComputeGradients(X, Y, P, W; lambda = 0.1)
+  % Do something in here!
+  grad_W = zeros(rows(W), columns(W));
+  grad_b = zeros(rows(W), 1);
+
+  return;
+endfunction
