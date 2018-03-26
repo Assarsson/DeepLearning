@@ -59,3 +59,14 @@ disp("Is B the correct shape: "),disp(size(b) == [K,1]);
 disp("xavier variance should be: "),disp(1/d);
 disp("gaussian variance should be: "),disp(0.1);
 disp("The variance of W is:"), disp(mean(var(W, 0, 2)));
+
+% Now we define a separate softmax-function that includes considerations for
+% numerical stability w.r.t potentially large exponents.
+% s as input is W*X + b, (K,d)*(d,N) + (K,1)
+function [p] = softmax(s)
+  s -= max(s);
+  p = exp(s) ./ sum(exp(s));
+  return;
+endfunction
+p = softmax(W*X+b); %broadcasted rendition
+disp("Softmax outputs correct shape: "),disp(size(p) == [K,N]);
