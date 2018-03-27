@@ -6,7 +6,7 @@
 ## Date: 2018-03-25
 ## TODO: move all disp-commands into a separate debugging function to clean up code
 ## and include the actual mini-batch GD-algorithm to finish the minireq of lab.
-rand('state',1);
+clear;
 % First we start with looking at some of the images from the dataset:
 addpath Datasets/cifar-10-batches-mat/; % adds our path to data
 % A = load('data_batch_1.mat'); % loads a saved datafile with examples as rows in A
@@ -19,20 +19,35 @@ addpath Datasets/cifar-10-batches-mat/; % adds our path to data
 % cost function: cross entropy loss function + L2-regularization term
 % We start by writing a function that loads data into batches:
 d = 32*32*3;
-N = 10000;
 K = 10;
-lambda = 0.01;
+lambda = 0;
+fileList = {'data_batch_1.mat', 'data_batch_2.mat', 'data_batch_3.mat', 'data_batch_4.mat'};
 function [X, Y, y] = LoadBatch(filename)
   inputFile = load(filename); %we load the file
-  X = im2double(inputFile.data'); %octave function that converts an image to doubles.
-  y = inputFile.labels+1; %we index our classes by 1-10 instead of 0-9
+  X = im2double(inputFile.data)'; %octave function that converts an image to doubles.
+  y = double(inputFile.labels+1); %we index our classes by 1-10 instead of 0-9
   Y = y == 1:max(y); %Y is 0 if it's not the max and 1 if it is.
-  Y = Y'; %transpose to fix alignments
+  Y = Y';
+  y = y';
+  N = columns(X); %transpose to fix alignments
   return;
 endfunction
-
+function [X, Y, y, N] = LoadAll(fileList)
+  X = [];
+  Y = [];
+  y = [];
+  for i=1:length(fileList)
+    [Xi,Yi,yi] = LoadBatch(fileList{i});
+    X = [X Xi];
+    Y = [Y Yi];
+    y = [y yi];
+    N = columns(X);
+  endfor
+  y = y';
+endfunction
 %Test if it works:
-[X,Y,y] = LoadBatch('data_batch_1.mat');
+% [X,Y,y,N] = LoadBatch('data_batch_1.mat');
+[X, Y, y, N] = LoadAll(fileList);
 
 disp("is X correct shape: "),disp(size(X) == [d, N]);
 disp("is Y correct shape: "),disp(size(Y) == [K,N]);
@@ -85,7 +100,7 @@ function P = EvaluateClassifier(X, W, b)
 endfunction
 
 P = EvaluateClassifier(X, W, b);
-disp("EvaluateClassifier can run on 10000 examples: "), disp(size(P));
+disp("EvaluateClassifier can run on 40000 examples: "), disp(size(P));
 
 % We write the cost function as given in the assignment, with cross entropy loss
 % and l2 regularization. Y'*P.. comes from that we have a one-hot representation
@@ -94,7 +109,7 @@ disp("EvaluateClassifier can run on 10000 examples: "), disp(size(P));
 
 function J = ComputeCost(X, Y, W, b, lambda)
   P = EvaluateClassifier(X, W, b);
-  J = (1/columns(X))*sum(-log(diag(Y'*P))) + lambda*sum(sum(W.**2));
+  J = -sum(log(sum(Y.*P, 1)))/columns(X) + lambda*sum(sumsq(W)); %changed due to memory issues
   return;
 endfunction
 J = ComputeCost(X, Y, W, b, lambda);
@@ -104,7 +119,7 @@ J = ComputeCost(X, Y, W, b, lambda);
 function acc = ComputeAccuracy(X, y, W, b)
   p = EvaluateClassifier(X, W, b);
   [pmax, pmaxidx] = max(p);
-  correctLabels = sum(pmaxidx' == y);
+  correctLabels = sum(y == pmaxidx');
   acc = correctLabels/columns(X);
   return;
 endfunction
@@ -134,7 +149,7 @@ function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, lambda)
 endfunction
 
 % Here we are introducing a resizing function to more quickly adapt our gradient checking.
-function [X,Y,y,W] = Resize(X,Y,y,W, size = 1, dimension = 10)
+function [X,Y,y,W] = Resize(X,Y,y,W, size = 2000, dimension = 100)
   X = X(1:dimension,1:size);
   Y = Y(:,1:size);
   y = y(1:size,:);
@@ -157,15 +172,56 @@ function maxDiff = GradChecker(grad_analytic, grad_numeric, epsilon = 1e-6)
   return;
 endfunction
 % first we resize the vectors
-[X, Y, y,W] = Resize(X,Y,y, W);
+% [X, Y, y,W] = Resize(X,Y,y, W);
 % we evaluate again to ensure P is of right size
-P = EvaluateClassifier(X, W, b);
+% P = EvaluateClassifier(X, W, b);
 % We compute our tired try of gradients
-lambda = 0;
-[grad_W_analytic, grad_b_analytic] = ComputeGradients(X, Y, P, W, lambda);
+% lambda = 0;
+% [grad_W_analytic, grad_b_analytic] = ComputeGradients(X, Y, P, W, lambda);
 % We compute the fast numerical approximation (might wanna test the slow one!)
-[grad_b_numerical, grad_W_numerical] = ComputeGradsNum(X, Y, W, b, lambda, 1e-6);
+% [grad_b_numerical, grad_W_numerical] = ComputeGradsNum(X, Y, W, b, lambda, 1e-6);
 % we display the differences with a _correct_ gradient function and element-wise operations everywhere,
 % as is correct.
-disp("Check that maximum gradient difference is OK for W: "),disp(GradChecker(grad_W_analytic, grad_W_numerical));
-disp("Check that maximum gradient difference is OK for b: "),disp(GradChecker(grad_b_analytic, grad_b_numerical));
+% disp("Check that maximum gradient difference is OK for W: "),disp(GradChecker(grad_W_analytic, grad_W_numerical));
+% disp("Check that maximum gradient difference is OK for b: "),disp(GradChecker(grad_b_analytic, grad_b_numerical));
+
+function [Wstar, bstar] = MiniBatchGD(X, Y, y,GDparams, W, b, lambda)
+  %[n_batch, eta, n_epochs] = GDparams;
+  n_batch = GDparams.n_batch;
+  eta = GDparams.eta;
+  n_epochs = GDparams.n_epochs;
+  N = columns(X);
+  for i=1:n_epochs
+    for j=1:N/n_batch
+      j_start = (j-1)*n_batch + 1;
+      j_end = j*n_batch;
+      inds = j_start:j_end;
+      Xbatch = X(:,inds);
+      Ybatch = Y(:,inds);
+      P = EvaluateClassifier(Xbatch, W, b);
+      [grad_W, grad_b] = ComputeGradients(Xbatch, Ybatch, P, W, lambda);
+      W = W-eta*grad_W;
+      b = b-eta*grad_b;
+    endfor
+    disp(ComputeCost(X, Y, W, b, lambda));
+    disp(ComputeAccuracy(X, y, W, b));
+  endfor
+  Wstar = W;
+  bstar = b;
+  return;
+endfunction
+
+GDparams.n_batch = 100;
+GDparams.eta = .01;
+GDparams.n_epochs = 40;
+[W,b] = Initialize(K, d);
+
+[Wstar, bstar] = MiniBatchGD(X,Y,y,GDparams, W, b, 0);
+disp(ComputeAccuracy(X,y,Wstar,bstar));
+for i=1:K
+  im = reshape(Wstar(i, :), 32, 32, 3);
+  s_im{i} = (im-min(im(:)))/(max(im(:))-min(im(:)));
+  s_im{i} = permute(s_im{i}, [2, 1, 3]);
+end
+montage(s_im, 'size', [1,K]);
+pause(50);
