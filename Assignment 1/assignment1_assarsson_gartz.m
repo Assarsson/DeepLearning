@@ -121,7 +121,7 @@ function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, lambda)
     x = X(:,i);
     y = Y(:,i);
     p = P(:,i);
-    g = y'/(y'*p)*(diag(p)-p*p');
+    g = -y'/(y'*p)*(diag(p)-p*p'); % We missed a f****** minus sign.
     grad_b = grad_b + g';
     grad_W = grad_W + g'*x';
   endfor
@@ -132,7 +132,7 @@ function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, lambda)
 endfunction
 
 % Here we are introducing a resizing function to more quickly adapt our gradient checking.
-function [X,Y,y,W] = Resize(X,Y,y,W, size = 32, dimension = 1000)
+function [X,Y,y,W] = Resize(X,Y,y,W, size = 1, dimension = 10)
   X = X(1:dimension,1:size);
   Y = Y(:,1:size);
   y = y(1:size,:);
@@ -150,4 +150,4 @@ lambda = 0;
 % We compute the fast numerical approximation (might wanna test the slow one!)
 [grad_b_numerical, grad_W_numerical] = ComputeGradsNum(X, Y, W, b, lambda, 1e-6);
 % we display the differences. The diagonal is one, and I have no idea any more. Good night.
-disp(abs(grad_W_analytic .- grad_W_numerical)/max(1e-9, abs(grad_W_analytic) .+ abs(grad_W_analytic)));
+disp(abs(grad_W_analytic .- grad_W_numerical)./max(1e-9, abs(grad_W_analytic) .+ abs(grad_W_numerical)));
