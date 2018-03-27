@@ -5,7 +5,7 @@ function correct = TestGradientCalculations()
   d = rows(X);
   lambda = 0;
   tolerance = 1e-4;
-  [W, b] = Initialize(K, d, initType = 'norand');
+  [W, b] = Initialize(K, d);
   [X, Y, y, W, N] = Resize(X, Y, y, W);
   P = EvaluateClassifier(X, W, b);
   [dW1, db1] = ComputeGradients(X, Y, P, W, N, lambda);
