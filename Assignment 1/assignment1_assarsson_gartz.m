@@ -114,7 +114,8 @@ disp("check that acc is in bounds: "),disp(0 <= acc & acc <= 1);
 
 % Now we need to compute our gradients according to the backprop algorithm
 function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, lambda)
-  % Below needs to be checked, with an additional derivation. A tired attempt :P!
+  % Below is evaluated correct
+  % Need to include the derivations for each term, for clarity.
   grad_W = zeros(rows(W), columns(W));
   grad_b = zeros(rows(W), 1);
   for i=1:columns(X)
@@ -140,6 +141,20 @@ function [X,Y,y,W] = Resize(X,Y,y,W, size = 1, dimension = 10)
   return
 endfunction
 
+function maxDiff = GradChecker(grad_analytic, grad_numeric, epsilon = 1e-6)
+  if (size(grad_analytic) != size(grad_numeric))
+    maxDiff = 0;
+    disp("Please input gradients with corresponding dimensions");
+    return;
+  endif
+  maxDiff = max(max(abs(grad_analytic .- grad_numeric)./max(1e-9, abs(grad_analytic).+abs(grad_numeric))));
+  if maxDiff < epsilon
+    maxDiff = 1;
+  else
+    maxDiff = 0;
+  endif
+  return;
+endfunction
 % first we resize the vectors
 [X, Y, y,W] = Resize(X,Y,y, W);
 % we evaluate again to ensure P is of right size
@@ -149,5 +164,7 @@ lambda = 0;
 [grad_W_analytic, grad_b_analytic] = ComputeGradients(X, Y, P, W, lambda);
 % We compute the fast numerical approximation (might wanna test the slow one!)
 [grad_b_numerical, grad_W_numerical] = ComputeGradsNum(X, Y, W, b, lambda, 1e-6);
-% we display the differences. The diagonal is one, and I have no idea any more. Good night.
-disp(abs(grad_W_analytic .- grad_W_numerical)./max(1e-9, abs(grad_W_analytic) .+ abs(grad_W_numerical)));
+% we display the differences with a _correct_ gradient function and element-wise operations everywhere,
+% as is correct.
+disp("Check that maximum gradient difference is OK for W: "),disp(GradChecker(grad_W_analytic, grad_W_numerical));
+disp("Check that maximum gradient difference is OK for b: "),disp(GradChecker(grad_b_analytic, grad_b_numerical));
