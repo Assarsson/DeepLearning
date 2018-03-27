@@ -10,5 +10,8 @@ function [W, b] = Initialize(K, d, initType)
     W = W*sqrt(1/d);
     b = b*sqrt(1/d);
     return;
+  elseif (initType == 'norand')
+    W = ones(K,d);
+    b = ones(K,1);
   end
 endfunction
