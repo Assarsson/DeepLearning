@@ -1,5 +1,4 @@
 function [Wstar, bstar] = MiniBatchGD(X, Y, y,GDparams, W, b, N,lambda)
-  %[n_batch, eta, n_epochs] = GDparams;
   n_batch = GDparams.n_batch;
   eta = GDparams.eta;
   n_epochs = GDparams.n_epochs;
@@ -12,11 +11,11 @@ function [Wstar, bstar] = MiniBatchGD(X, Y, y,GDparams, W, b, N,lambda)
       Ybatch = Y(:,inds);
       P = EvaluateClassifier(Xbatch, W, b);
       [grad_W, grad_b] = ComputeGradients(Xbatch, Ybatch, P, W, n_batch,lambda);
-      W = W-eta*grad_W;
-      b = b-eta*grad_b;
+      W -= eta*grad_W;
+      b -= eta*grad_b;
     endfor
-    disp(ComputeCost(X, Y, W, b, N,lambda));
-    disp(ComputeAccuracy(X, y, W, b, N));
+    disp('Cost at current epoch: '),disp(ComputeCost(X, Y, W, b, N,lambda));
+    disp('Accuracy at current epoch: '),disp(ComputeAccuracy(X, y, W, b, N));
   endfor
   Wstar = W;
   bstar = b;

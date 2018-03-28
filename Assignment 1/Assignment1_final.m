@@ -14,7 +14,9 @@ GDparams.n_batch = 100;
 GDparams.eta = .01;
 GDparams.n_epochs = 40;
 [W,b] = Initialize(K,d);
+disp(W(:,1));
 [W,b] = MiniBatchGD(Xtrain, Ytrain, ytrain, GDparams, W, b, N,lambda);
+disp(W(:,1));
 disp("Test accuracy: "),disp(ComputeAccuracy(Xtest, ytest, W, b, N));
 for i=1:K
   im = reshape(W(i, :), 32, 32, 3);
