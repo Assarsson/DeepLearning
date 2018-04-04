@@ -23,6 +23,5 @@ for i=1:K
 end
 
 
-%montage(s_im, 'size', [1,K]);
-image(s_im{i});
+montage(s_im, 'size', [1,K]);
 pause(50);
