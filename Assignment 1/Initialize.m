@@ -14,17 +14,17 @@ function [W, b] = Initialize(K, d, initType)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   W = double(randn(K,d));
   b = double(randn(K,1));
+  mu = 0;
   if nargin < 3
-    W = W*sqrt(0.1);
-    b = b*sqrt(0.1);
-    return;
-  end
-  if (initType == 'xavier')
-    W = W*sqrt(1/d);
-    b = b*sqrt(1/d);
-    return;
+    variance = 0.01;
+  elseif (initType == 'xavier')
+    variance = 1/d;
   elseif (initType == 'norand')
-    W = ones(K,d);
-    b = ones(K,1);
+    variance = 0.1;
+    W = double(ones(K,d));
+    b = double(ones(K,1));
   end
+  W = W*sqrt(variance) + mu;
+  b = b*sqrt(variance) + mu;
+  return;
 endfunction

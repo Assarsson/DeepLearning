@@ -29,7 +29,7 @@ function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, N, lambda)
     grad_W += g'*Xi';
   end
 
-  regularization_term = 2*lambda*W
+  regularization_term = 2*lambda*W;
   grad_b /= N;
   grad_W /= N;
   grad_W += regularization_term;

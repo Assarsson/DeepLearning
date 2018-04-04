@@ -20,7 +20,7 @@ function correct = TestMiniBatchGD()
   GDparams.eta = .01;
   GDparams.n_epochs = 20;
   [Wstar, bstar] = MiniBatchGD(X, Y, y,GDparams, W, b, N, lambda);
-  if (size(Wstar) = size(W) && size(bstar) == size(b))
+  if (size(Wstar) == size(W) && size(bstar) == size(b))
     correct = 'pass';
   else
     correct = 'fail';
