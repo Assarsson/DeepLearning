@@ -1,5 +1,5 @@
 clear;
-
+pkg load image;
 [Xtrain, Ytrain, ytrain, Ntrain] = LoadBatch('data_batch_1.mat');
 [Xval, Yval, yval, Nval] = LoadBatch('data_batch_2.mat');
 [Xtest, Ytest, ytest, Ntest] = LoadBatch('test_batch.mat');
