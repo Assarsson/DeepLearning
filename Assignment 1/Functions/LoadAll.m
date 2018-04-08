@@ -10,5 +10,4 @@ function [X, Y, y, N] = LoadAll(fileList)
   y = [y yi];
   endfor
   N = columns(X);
-  return;
 endfunction

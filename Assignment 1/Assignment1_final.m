@@ -268,29 +268,56 @@ function [W, b] = Initialize(K, d, initType)
   return;
 endfunction
 
-[Xtrain, Ytrain, ytrain, Ntrain] = LoadBatch('data_batch_1.mat');
+function [X, Y, y, N] = LoadAll(fileList)
+  X = [];
+  Y = [];
+  y = [];
+  for i=1:length(fileList)
+  [Xi, Yi, yi, N] = LoadBatch(fileList{i});
+  X = [X Xi];
+  Y = [Y Yi];
+  y = [y yi'];
+  endfor
+  N = columns(X);
+endfunction
+files = {'data_batch_1.mat', 'data_batch_2.mat', 'data_batch_3.mat', 'data_batch_4.mat', 'data_batch_5.mat'};
+[Xtrain, Ytrain, ytrain, Ntrain] = LoadAll(files);
 [Xval, Yval, yval, Nval] = LoadBatch('data_batch_2.mat');
 [Xtest, Ytest, ytest, Ntest] = LoadBatch('test_batch.mat');
+Xval = Xtrain(:,Ntrain-1000:Ntrain);
+Yval = Ytrain(:,Ntrain-1000:Ntrain);
+yval = ytrain(:,Ntrain-1000:Ntrain)';
+Nval = 1000;
+Xtrain = Xtrain(:,1:Ntrain-1000);
+Ytrain = Ytrain(:,1:Ntrain-1000);
+ytrain = ytrain(:,1:Ntrain-1000)';
+Ntrain -= Nval;
 K = max(ytrain);
 d = rows(Xtrain);
 N = Ntrain;
-lambda = 1;
-n_batch = 100;
+lambda = 0;
+n_batch = 128;
 eta = 0.01;
 n_epochs = 40;
 %W = double(0.01.*randn(K,d));
 %b = double(0.01.*randn(K,1));
-[W, b] = Initialize(K,d);
-J_train = zeros(n_epochs, 1);
-J_val = zeros(n_epochs, 1);
-P = EvaluateClassifier(Xtrain, W, b);
-[dW_a, db_a] = ComputeGradients(Xtrain, Ytrain, P, W, N, lambda);
-[db_n, dW_n] = ComputeGradsNumSlow(Xtrain, Ytrain, W, b, N, lambda, 1e-6);
-W_diff = GradChecker(dW_a, dW_n);
-disp(W_diff);
-b_diff = GradChecker(db_a, db_n);
-disp(b_diff);
-for i = 1:n_epochs
+[W, b] = Initialize(K,d, 'xavier');
+J_train = [];
+J_val = [];
+
+%This section is out-commented if one wants to perform a full gradient check.
+%P = EvaluateClassifier(Xtrain, W, b);
+%[dW_a, db_a] = ComputeGradients(Xtrain, Ytrain, P, W, N, lambda);
+%[db_n, dW_n] = ComputeGradsNumSlow(Xtrain, Ytrain, W, b, N, lambda, 1e-6);
+%W_diff = GradChecker(dW_a, dW_n);
+%disp(W_diff);
+%b_diff = GradChecker(db_a, db_n);
+%disp(b_diff);
+valCost = 1000;
+iterator = 0;
+while (1)
+  iterator += 1;
+  disp(iterator);
   for j = 1:N/n_batch
     j_start = (j-1)*n_batch + 1;
     j_end = j*n_batch;
@@ -303,20 +330,26 @@ for i = 1:n_epochs
   accTrain = ComputeAccuracy(Xtrain, ytrain, W, b, N);
   disp('Cost at current epoch: '),disp(costTrain);
   disp('Accuracy at current epoch: '),disp(accTrain);
-  J_train(i) = costTrain;
-  J_val(i) = ComputeCost(Xval, Yval, W, b, N, lambda);
-endfor
+  J_train = [J_train costTrain];
+  costVal = ComputeCost(Xval, Yval, W, b, Nval, lambda);
+  J_val = [J_val costVal];
+  disp('Validation cost decrease: '),disp(valCost - costVal);
+  if (valCost  < costVal + 3e-4)
+    break;
+  endif
+  valCost = costVal;
+endwhile
 
 graphics_toolkit gnuplot;
 fig = figure();
 set(fig, 'visible', 'off');
 set(0, 'defaultaxesfontname', 'Helvetica');
 hold on;
-plot(1:n_epochs, J_train, 'b', 1:n_epochs, J_val, 'y');
-title('Cost with lambda = 1, #epochs = 40, #batches = 100, eta = 0.01');
+plot(1:iterator, J_train, 'b', 1:iterator, J_val, 'y');
+title('Cost with lambda = 0, #epochs = early stop, #batches = 128, eta = 0.01, full data and xavier-initialization');
 legend('Training Cost', 'Validation Cost');
 print -djpg image.jpg;
-accuracy = ComputeAccuracy(Xtest, ytest, W, b, N);
+accuracy = ComputeAccuracy(Xtest, ytest, W, b, Ntest);
 disp(accuracy);
 mt = [];
 for i = 1:K
