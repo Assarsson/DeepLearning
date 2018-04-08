@@ -20,8 +20,7 @@ function J = ComputeCost(X, Y, W, b, N, lambda)
   % OUTPUT:
   %   J -- The scalar Cost-value.
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-
+  J = 0;
   P = EvaluateClassifier(X, W, b);
-  J = -sum(diag(log(Y'*P)))/N + lambda*sum(sumsq(W));
-  return;
+  J = -sum(log(sum(Y.*P)))/N + lambda*sum(sumsq(W));
 endfunction

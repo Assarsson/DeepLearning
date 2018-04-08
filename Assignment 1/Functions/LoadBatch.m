@@ -10,16 +10,14 @@ function [X, Y, y, N] = LoadBatch(fileName)
   %   X -- Matrix of data with size (d, N)
   %   Y -- Matrix of one-hot repesentation with size (K, N)
   %   y -- Vector of ground-truth labels of size (1, N)
-  %   N -- Scalar value with value N. For readibility in subsequent functions.
+  %   N -- Scalar value with value N. For readibility in subs
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   warning('off','all');
   addpath Datasets/cifar-10-batches-mat/;
   inputFile = load(fileName);
   X = im2double(inputFile.data)';
-  %X = double(inputFile.data)'/255;
-  y = double(inputFile.labels') +1;
-  Y = y' == 1:max(y);
+  y = double(inputFile.labels) +1;
+  Y = y == 1:max(y);
   N = columns(X);
   Y = Y';
-  return;
 endfunction

@@ -24,7 +24,7 @@ function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, N, lambda)
     Xi = X(:,i);
     Yi = Y(:,i);
     Pi = P(:,i);
-    g = -Yi'*(diag(Pi)-Pi*Pi')/(Yi'*Pi); % We missed a f****** minus sign.
+    g = -Yi'/(Yi'*Pi)*(diag(Pi)-Pi*Pi'); % We missed a f****** minus sign.
     grad_b += g';
     grad_W += g'*Xi';
   end
@@ -34,5 +34,4 @@ function [grad_W, grad_b] = ComputeGradients(X, Y, P, W, N, lambda)
   grad_W /= N;
   grad_W += regularization_term;
 
-  return;
 endfunction

@@ -19,8 +19,8 @@ function correct = TestGradientCalculations()
   P = EvaluateClassifier(X, W, b);
   [dW1, db1] = ComputeGradients(X, Y, P, W, N, lambda);
   [db2, dW2] = ComputeGradsNumSlow(X, Y, W, b, N, lambda, 1e-9);
-  disp(db1);
-  disp(db2);
+  disp('size of db1'), disp(db1);
+  disp('size of db2'), disp(db2);
   maxDiffW = GradChecker(dW1, dW2);
   maxDiffb = GradChecker(db1, db2);
   if maxDiffb > tolerance
