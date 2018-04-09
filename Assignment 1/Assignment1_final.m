@@ -36,7 +36,7 @@ function p = Softmax(s)
   % OUTPUT:
   %   p -- the probability matrix for the classes of X of size (K, N)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-  %s -= max(s);
+  s -= max(s);
   p = exp(s) ./ sum(exp(s));
 endfunction
 
@@ -254,10 +254,11 @@ function [W, b] = Initialize(K, d, initType)
   W = double(randn(K,d));
   b = double(randn(K,1));
   mu = 0;
+  variance = 0.001;
   if nargin < 3
     variance = 0.001;
   elseif (initType == 'xavier')
-    variance = 1/d;
+    variance = 2/d;
   elseif (initType == 'norand')
     variance = 0.01;
     W = double(ones(K,d));
@@ -296,7 +297,7 @@ K = max(ytrain);
 d = rows(Xtrain);
 N = Ntrain;
 lambda = 0;
-n_batch = 128;
+n_batch = 256;
 eta = 0.01;
 n_epochs = 40;
 %W = double(0.01.*randn(K,d));
@@ -334,7 +335,7 @@ while (1)
   costVal = ComputeCost(Xval, Yval, W, b, Nval, lambda);
   J_val = [J_val costVal];
   disp('Validation cost decrease: '),disp(valCost - costVal);
-  if (valCost  < costVal + 3e-4)
+  if (valCost  < costVal + 1e-3)
     break;
   endif
   valCost = costVal;
