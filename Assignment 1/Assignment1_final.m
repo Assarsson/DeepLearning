@@ -258,7 +258,7 @@ function [W, b] = Initialize(K, d, initType)
   if nargin < 3
     variance = 0.001;
   elseif (initType == 'xavier')
-    variance = 2/d;
+    variance = 1/d;
   elseif (initType == 'norand')
     variance = 0.01;
     W = double(ones(K,d));
