@@ -21,7 +21,7 @@ n_epochs = 100;
 n_batch = 64;
 eta = 0.10;
 rho = 0.9;
-lambda = 0;
+lambda = 0.000001;
 J_train = [];
 J_val = [];
 %%%% Gradient checking procedure
@@ -48,6 +48,9 @@ for i=1:n_epochs
   J_val = [J_val costVal];
 endfor
 disp('test acc: '),disp(ComputeAccuracy(Xtest,ytest, W, b,ntest));
+
+
+
 graphics_toolkit gnuplot;
 fig = figure();
 set(fig, 'visible', 'off');
