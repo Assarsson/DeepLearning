@@ -11,3 +11,4 @@ hiddenNodes = 50;
 [Xtrain, mean_of_Xtrain] = Preprocess(Xtrain);
 Theta = Initialize(K, d, hiddenNodes);
 cache = EvaluateClassifier(Xtrain, Theta);
+disp(ComputeCost(Xtrain, Ytrain, Theta, N, lambda = 0));
