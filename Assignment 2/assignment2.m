@@ -10,4 +10,4 @@ K = rows(Ytrain);
 hiddenNodes = 50;
 [Xtrain, mean_of_Xtrain] = Preprocess(Xtrain);
 Theta = Initialize(K, d, hiddenNodes);
-P = EvaluateClassifier(Xtrain, Theta);
+cache = EvaluateClassifier(Xtrain, Theta);
