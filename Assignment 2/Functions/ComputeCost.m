@@ -1,4 +1,4 @@
-function J = ComputeCost(X, Y, Theta, N, lambda)
+function J = ComputeCost(X, Y, W, b, N, lambda)
   % ComputeCost computes the total cost of generating our guessed distribution
   % from the correct distribution of labels, with a cross-entropy loss and
   % and a L2-regularization-term. As the Crossentropy between P and y can be
@@ -20,9 +20,9 @@ function J = ComputeCost(X, Y, Theta, N, lambda)
   %   J -- The scalar Cost-value.
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   J = 0;
-  W1 = Theta{1, 1};
-  W2 = Theta{2, 1};
-  cache = EvaluateClassifier(X, Theta);
+  W1 = W{1, 1};
+  W2 = W{2, 1};
+  cache = EvaluateClassifier(X, W, b);
   P = cache{4, 1};
   J = -sum(log(sum(Y.*P)))/N + lambda*(sum(sumsq(W1)) + sum(sumsq(W2)));
 endfunction

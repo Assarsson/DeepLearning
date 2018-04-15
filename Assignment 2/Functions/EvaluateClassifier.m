@@ -1,4 +1,4 @@
-function cache = EvaluateClassifier(X, Theta)
+function cache = EvaluateClassifier(X, W, b)
   % EvaluateClassifier computes the two layers of our forward pass. It is described
   % classicaly by an affine transformation that consists of a linear map and bias term.
   % W*X "twists and turns" the data, whereas the bias term translates it.
@@ -24,10 +24,10 @@ function cache = EvaluateClassifier(X, Theta)
   %   P -- the probability matrix for the classes of X of size (K, N)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   cache = cell(4,1);
-  W1 = Theta{1, 1};
-  b1 = Theta{1, 2};
-  W2 = Theta{2, 1};
-  b2 = Theta{2, 2};
+  W1 = W{1, 1};
+  b1 = b{1, 1};
+  W2 = W{2, 1};
+  b2 = b{2, 1};
   s1 = W1*X + b1;
   h = Relu(s1);
   s = W2*h + b2;

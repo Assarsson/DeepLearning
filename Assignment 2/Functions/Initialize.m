@@ -1,4 +1,4 @@
-function [Theta] = Initialize(K, d, hiddenNodes, initType)
+function [W, b] = Initialize(K, d, hiddenNodes, initType)
   % Initialize creates our W and b matrices and populates them with random values.
   % It either utilizes a random gaussian prior on the parameters or a Xavier prior.
   % The role of the Xavier prior is to keep X and and W*X equivariant, to increase
@@ -12,7 +12,8 @@ function [Theta] = Initialize(K, d, hiddenNodes, initType)
   %   W -- A populated weight matrix of size (K, d)
   %   b -- A populated bias vector of size (K, 1)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-  Theta = cell(2,2);
+  W = cell(2,1);
+  b = cell(2,1);
   W1 = double(randn(hiddenNodes,d));
   W2 = double(randn(K, hiddenNodes));
   b1 = double(zeros(hiddenNodes,1));
@@ -30,9 +31,9 @@ function [Theta] = Initialize(K, d, hiddenNodes, initType)
   end
   W1 = W1*sqrt(variance) + mu;
   W2 = W2*sqrt(variance) + mu;
-  Theta(1,1) = W1;
-  Theta(1,2) = b1;
-  Theta(2,1) = W2;
-  Theta(2,2) = b2;
-  
+  W(1,1) = W1;
+  b(1,1) = b1;
+  W(2,1) = W2;
+  b(2,1) = b2;
+
 endfunction
