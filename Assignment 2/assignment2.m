@@ -45,7 +45,10 @@ for lambda = lambdas
     J_val = [];
     tempAccuracies = [];
     tic;
+    valCost = 10000;
+    iterator = 0;
     for i=1:n_epochs
+      iterator += 1;
       for j=1:N/n_batch
         j_start = (j-1)*n_batch + 1;
         j_end = j*n_batch;
@@ -61,9 +64,14 @@ for lambda = lambdas
       J_train = [J_train costTrain];
       costVal = ComputeCost(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), Yval, W, b, Nval, lambda);
       J_val = [J_val costVal];
+      if (valCost  < costVal + 1e-3)
+        break;
+      endif
+      valCost = costVal;
     endfor
     disp('Time for evaluating one parameter setting: ');
     toc;
+    disp(ComputeAccuracy(Xtest-repmat(mean_of_Xtrain,[1,size(Xtest,2)]),ytest, W, b,ntest));
     tempAccuracies = [tempAccuracies ComputeAccuracy(Xtest-repmat(mean_of_Xtrain,[1,size(Xtest,2)]),ytest, W, b,ntest)];
     bestAccuracies = [bestAccuracies ['accuracy: ' num2str(max(tempAccuracies)) ' for lambda ' num2str(lambda) ' and eta ' num2str(eta) char(10)]];
     graphics_toolkit gnuplot;
@@ -72,7 +80,7 @@ for lambda = lambdas
     set(0, 'defaultaxesfontname', 'Helvetica');
     hold on;
     titleText = ['Cost with lambda = ' num2str(lambda) ' #epochs = ' num2str(n_epochs) ' #batches = ' num2str(n_batch) ' eta = ' num2str(eta) ' examples = ' num2str(N)];
-    plot(1:n_epochs, J_train, 'b', 1:n_epochs, J_val, 'y');
+    plot(1:iterator, J_train, 'b', 1:iterator, J_val, 'y');
     title(titleText);
     imageName = ['eta' num2str(eta) '+lambda' num2str(lambda) '.jpg'];
     legend('Training Cost', 'Validation Cost');
