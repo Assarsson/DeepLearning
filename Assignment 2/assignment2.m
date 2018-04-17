@@ -14,7 +14,7 @@ ytrain = ytrain(1:N,:);
 Ntrain = N;
 hiddenNodes = 50;
 [Xtrain, mean_of_Xtrain] = Preprocess(Xtrain);
-n_epochs = 5;
+n_epochs = 10;
 n_batch = 64;
 rho = 0.9;
 no_etas = 2;
@@ -23,6 +23,8 @@ etas = Generateparams(-1.70,-1.52,no_etas);
 lambdas = Generateparams(-4.7,-2.60,no_lambdas);
 titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.'];
 disp(titleText);
+lambdas = [0.00013554];
+etas = [0.020815];
 %%%% Gradient checking procedure
 %[grad_b_n, grad_W_n] = ComputeGradsNumSlow(Xtrain, Ytrain, W, b, N, 0, 1e-5);
 %for i=1:2
