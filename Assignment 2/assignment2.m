@@ -19,10 +19,12 @@ n_batch = 64;
 rho = 0.9;
 no_etas = 5;
 no_lambdas = 20;
-etas = Generateparams(-1,-0.5,no_etas);
-lambdas = Generateparams(-4,-2,no_lambdas);
-titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.']
+etas = Generateparams(-0.9,-0.76,no_etas);
+lambdas = Generateparams(-3.011,-2.5,no_lambdas);
+titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.'];
 disp(titleText);
+etas = [0.01, 0.02, 0.03, 0.05, 0.09];
+lambdas = [0.000001];
 %%%% Gradient checking procedure
 %[grad_b_n, grad_W_n] = ComputeGradsNumSlow(Xtrain, Ytrain, W, b, N, 0, 1e-5);
 %for i=1:2
@@ -45,7 +47,7 @@ for lambda = lambdas
         inds = j_start:j_end;
         Xbatch = Xtrain(:,inds);
         Ybatch = Ytrain(:,inds);
-        [W,b] = MiniBatchGD(Xbatch, Ybatch, eta, W, b, Wm, bm, n_batch,lambda, rho);
+        [W,b,Wm,bm] = MiniBatchGD(Xbatch, Ybatch, eta, W, b, Wm, bm, n_batch,lambda, rho);
       endfor
       costTrain = ComputeCost(Xtrain, Ytrain, W, b, N, lambda);
       accTrain = ComputeAccuracy(Xtrain, ytrain, W, b, N);
@@ -74,4 +76,4 @@ for lambda = lambdas
 endfor
 disp(bestAccuracies);
 save bestAccuracies.txt bestAccuracies;
-disp('finished!')
+disp('finished!');

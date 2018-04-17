@@ -1,4 +1,4 @@
-function [Wstar, bstar] = MiniBatchGD(Xbatch, Ybatch,eta, W, b, Wm, bm, N,lambda, rho)
+function [Wstar, bstar, Wm, bm] = MiniBatchGD(Xbatch, Ybatch,eta, W, b, Wm, bm, N,lambda, rho)
   % MiniBatchGD performs the entire forward and backward pass.
   % It divides the dataset (X, Y)-pairs into batches and computes
   % the forward pass to generate a batch-determined class probability distribution
