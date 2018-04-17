@@ -18,9 +18,9 @@ n_epochs = 5;
 n_batch = 64;
 rho = 0.9;
 no_etas = 2;
-no_lambdas = 25;
+no_lambdas = 10;
 etas = Generateparams(-1.70,-1.52,no_etas);
-lambdas = Generateparams(-5,-1,no_lambdas);
+lambdas = Generateparams(-4.7,-2.60,no_lambdas);
 titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.'];
 disp(titleText);
 %%%% Gradient checking procedure
