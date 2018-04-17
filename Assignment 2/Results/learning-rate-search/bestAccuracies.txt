@@ -5,6 +5,10 @@
 # length: 273
 accuracy: 0.1664 for lambda 1e-06 and eta 0.001
 accuracy: 0.4058 for lambda 1e-06 and eta 0.01
+accuracy: 0.4131 for lambda 1e-06 and eta 0.02
+accuracy: 0.417 for lambda 1e-06 and eta 0.03
+accuracy: 0.4008 for lambda 1e-06 and eta 0.05
+accuracy: 0.3626 for lambda 1e-06 and eta 0.09
 accuracy: 0.3514 for lambda 1e-06 and eta 0.1
 accuracy: 0.2684 for lambda 1e-06 and eta 0.2
 accuracy: 0.1 for lambda 1e-06 and eta 0.3

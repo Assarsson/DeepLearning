@@ -17,14 +17,12 @@ hiddenNodes = 50;
 n_epochs = 5;
 n_batch = 64;
 rho = 0.9;
-no_etas = 5;
-no_lambdas = 20;
-etas = Generateparams(-0.9,-0.76,no_etas);
-lambdas = Generateparams(-3.011,-2.5,no_lambdas);
+no_etas = 2;
+no_lambdas = 25;
+etas = Generateparams(-1.70,-1.52,no_etas);
+lambdas = Generateparams(-5,-1,no_lambdas);
 titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.'];
 disp(titleText);
-etas = [0.01, 0.02, 0.03, 0.05, 0.09];
-lambdas = [0.000001];
 %%%% Gradient checking procedure
 %[grad_b_n, grad_W_n] = ComputeGradsNumSlow(Xtrain, Ytrain, W, b, N, 0, 1e-5);
 %for i=1:2
