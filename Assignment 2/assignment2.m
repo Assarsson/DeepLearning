@@ -25,7 +25,12 @@ titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' paramete
 disp(titleText);
 lambdas = [0.00013554];
 etas = [0.020815];
+
 %%%% Gradient checking procedure
+%lambda = 0;
+%[W, b] = Initialize(K, d, hiddenNodes);
+%cache = EvaluateClassifier(Xtrain, W, b);
+%[grad_b_a, grad_W_a] = ComputeGradients(Xtrain, Ytrain, cache, W, b, N, lambda);
 %[grad_b_n, grad_W_n] = ComputeGradsNumSlow(Xtrain, Ytrain, W, b, N, 0, 1e-5);
 %for i=1:2
 %  disp(GradChecker(grad_W_a{i}, grad_W_n{i}));
@@ -74,6 +79,7 @@ for lambda = lambdas
     print(imageName);
   endfor
 endfor
+disp(ComputeAccuracy(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), yval, W, b, Nval));
 disp(bestAccuracies);
 save bestAccuracies.txt bestAccuracies;
 disp('finished!');
