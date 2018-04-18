@@ -200,18 +200,21 @@ function [W, b] = Initialize(K, d, hiddenNodes, initType)
   b1 = double(zeros(hiddenNodes,1));
   b2 = double(zeros(K,1));
   mu = 0;
-  variance = 0.000001;
+  variance1 = 0.000001;
+  variance2 = 0.000001;
   if nargin < 4
-    variance = 0.000001;
+    variance1 = 0.000001;
+    variance2 = 0.000001;
   elseif (initType == 'xavier')
-    variance = 1/d;
+    variance1 = 2/d;
+    variance2 = 2/hiddenNodes;
   elseif (initType == 'norand')
     variance = 0.1;
     W = double(ones(K,d));
     b = double(ones(K,1));
   end
-  W1 = W1*sqrt(variance) + mu;
-  W2 = W2*sqrt(variance) + mu;
+  W1 = W1*sqrt(variance1) + mu;
+  W2 = W2*sqrt(variance2) + mu;
   W(1,1) = W1;
   b(1,1) = b1;
   W(2,1) = W2;
@@ -389,13 +392,29 @@ for j=1:length(W)
     end
 end
 endfunction
+
+
+function [X, Y, y, N] = LoadAll(fileList)
+  X = [];
+  Y = [];
+  y = [];
+  for i=1:length(fileList)
+  [Xi, Yi, yi, N] = LoadBatch(fileList{i});
+  X = [X Xi];
+  Y = [Y Yi];
+  y = [y yi'];
+  endfor
+  N = columns(X);
+endfunction
+
 %Here ends the appending of functions for the hand-in
 
 
 
-[Xtrain, Ytrain, ytrain, Ntrain] = LoadBatch('data_batch_1.mat');
-[Xval, Yval, yval, Nval] = LoadBatch('data_batch_2.mat');
+[Xtrain, Ytrain, ytrain, Ntrain] = LoadAll({'data_batch_1.mat', 'data_batch_2.mat', 'data_batch_3.mat', 'data_batch_4.mat'});
+[Xval, Yval, yval, Nval] = LoadBatch('data_batch_5.mat');
 [Xtest, Ytest, ytest, ntest] = LoadBatch('test_batch.mat');
+ytrain = ytrain';
 d = rows(Xtrain);
 N = Ntrain;
 K = rows(Ytrain);
@@ -414,7 +433,7 @@ etas = Generateparams(-1.70,-1.52,no_etas);
 lambdas = Generateparams(-4.7,-2.60,no_lambdas);
 titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.'];
 disp(titleText);
-lambdas = [0.00013554];
+lambdas = [0.00023554];
 etas = [0.020815];
 
 %%%% Gradient checking procedure
@@ -430,7 +449,7 @@ etas = [0.020815];
 bestAccuracies = [];
 for lambda = lambdas
   for eta = etas
-    [W, b] = Initialize(K, d, hiddenNodes);
+    [W, b] = Initialize(K, d, hiddenNodes, 'xavier');
     [Wm, bm] = InitializeMomentum(W,b);
     J_train = [];
     J_val = [];
@@ -455,7 +474,9 @@ for lambda = lambdas
       J_train = [J_train costTrain];
       costVal = ComputeCost(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), Yval, W, b, Nval, lambda);
       J_val = [J_val costVal];
-      if (valCost  < costVal + 1e-3)
+      disp('current validation cost: '),disp(costVal);
+      disp('prior validation cost: '),disp(valCost);
+      if (valCost  < costVal)
         break;
       endif
       valCost = costVal;

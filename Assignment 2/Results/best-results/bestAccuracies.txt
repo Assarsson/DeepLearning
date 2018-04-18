@@ -3,7 +3,7 @@
 # type: sq_string
 # elements: 1
 # length: 56
-accuracy: 0.4255 for lambda 0.00013554 and eta 0.020815
+accuracy: 0.4778 for lambda 0.0023554 and eta 0.020815
 
 
 
