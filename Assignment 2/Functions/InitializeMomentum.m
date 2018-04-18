@@ -1,16 +1,12 @@
 function [Wm, bm] = InitializeMomentum(W, b)
-  % Initialize creates our W and b matrices and populates them with random values.
-  % It either utilizes a random gaussian prior on the parameters or a Xavier prior.
-  % The role of the Xavier prior is to keep X and and W*X equivariant, to increase
-  % stability of the model and increase speed in our iterations.
+  % Initialize creates our Wm and bm cells and populates them with zeros.
   % INPUT:
-  %   K -- The number of classes for our problem
-  %   d -- The dimensionality of our input X.
-  %   initType -- Optional variable that can invoke xavier-initialization.
+  %   W -- the current weight cell of size (2,1) containing W1 and W2
+  %   b -- the current bias cell of size (2,1) containing b1 and b2
   %
   % OUTPUT:
-  %   W -- A populated weight matrix of size (K, d)
-  %   b -- A populated bias vector of size (K, 1)
+  %   Wm -- A populated weight momentum cell of size (2, 1)
+  %   bm -- A populated bias momentum cell of size (2, 1)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   Wm = cell(2,1);
   bm = cell(2,1);

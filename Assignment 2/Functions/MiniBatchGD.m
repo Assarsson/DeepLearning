@@ -9,16 +9,20 @@ function [Wstar, bstar, Wm, bm] = MiniBatchGD(Xbatch, Ybatch,eta, W, b, Wm, bm, 
   % INPUT:
   %   X -- The current data batch of size (d, N)
   %   Y -- The current one-hot label matrix of size (K, N)
-  %   y -- The current label matrix of size (1, N)
-  %   GDparams -- Object containing scalars for batchsize, eta and epochs.
-  %   W -- The current weight matrix of size (K, d)
-  %   b -- The current bias vector of size (K, 1)
+  %   eta -- the current learning rate
+  %   W -- The current weight cell of size (2, 1) containing W1 and W2
+  %   b -- The current bias cell of size (2, 1) containing b1 and b2
+  %   Wm -- The current weight momentum cell of size (2, 1) containing Wm1 and Wm2
+  %   bm -- The current bias momentum cell of size (2, 1) containing bm1 and bm2
   %   N -- The scalar value representing number of examples.
   %   lambda -- The weighting parameter of our regularization term.
+  %   rho -- The momentum term, a scalar betwenn 0 and 1
   %
   % OUTPUT:
   %   Wstar -- The final computed gradient for W of size (K, d)
   %   bstar -- The final computed gradient for b of size (K, 1)
+  %   Wm -- The updated weight momentum cell of size (2, 1) containing Wm1 and Wm2
+  %   bm -- The updated bias momentum cell of size (2, 1) containing bm1 and bm2
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   Wstar = cell(2,1);
   bstar = cell(2,1);

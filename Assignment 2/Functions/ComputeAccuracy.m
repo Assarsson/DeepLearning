@@ -7,8 +7,8 @@ function acc = ComputeAccuracy(X, y, W, b, N)
   % INPUT:
   %   X -- The current data batch of size (d, N_batch)
   %   y -- The current label vector of size (1, N_batch)
-  %   W -- The current weight matrix of size (K, d)
-  %   b -- The current bias vector of size (K, 1)
+  %   W -- The current weight cell of size (2,1) containing W1 and W2
+  %   b -- The current bias cell of size (2, 1) containing b1 and b2
   %   N -- The current batch size, i.e. N == N_batch
   %
   % OUTPUT:

@@ -1,16 +1,14 @@
 function [grad_b,grad_W] = ComputeGradients(X, Y, cache, W, b, N, lambda)
   % ComputeGradients computes the gradients of W and b as defined by differentiating
   % the cost function with respects to the node in the computational graph and traversing it
-  % likeso, until we reach the parameter variable of interest. As we have a 1-layer shallow network
-  % this results in us only needing to update DL/DW and DL/Db. The gradient of b is defined solely
-  % by the gradient-function g(), stemming from the cross-entropy loss function. W has the
-  % inner derivative from multiplication with X, as well as the derivative of the reguralization
-  % term.x
+  % likeso, until we reach the parameter variable of interest. As we have a 2-layer network
+  % this results in us needing to update DL/DW1, DL/DW2, DL/Db1 and DL/Db2. 
   % INPUT:
   %   X -- The current data batch of size (d, N_batch)
   %   Y -- The current one-hot label representation of size (K, N_batch) (true distribution)
   %   P -- The current probability distribution calculated by our parametrized model.
-  %   W -- The current weight matrix of size (K, d)
+  %   W -- The current weight cell of size (2, 1) containing W1 and W2
+  %   b -- The current bias cell of size (2,1) containing b1 and b2
   %   N -- The current batch size, i.e. N == N_batch
   %   lambda -- The current scalar regularization parameter
   %

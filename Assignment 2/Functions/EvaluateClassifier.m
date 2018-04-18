@@ -17,8 +17,8 @@ function cache = EvaluateClassifier(X, W, b)
   % true labels in Y or y.
   % INPUT:
   %   X -- The current data batch of size (d, N_batch)
-  %   W -- The current weight matrix of size (K, d)
-  %   b -- The current bias vector of size (K, 1)
+  %   W -- The current weight cell of size (2, 1) containing W1 and W2
+  %   b -- The current bias cell of size (2, 1) containing b1 and b2
   %
   % OUTPUT:
   %   P -- the probability matrix for the classes of X of size (K, N)

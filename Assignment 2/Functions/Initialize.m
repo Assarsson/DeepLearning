@@ -1,5 +1,5 @@
 function [W, b] = Initialize(K, d, hiddenNodes, initType)
-  % Initialize creates our W and b matrices and populates them with random values.
+  % Initialize creates our W and b cells and populates them with random values.
   % It either utilizes a random gaussian prior on the parameters or a Xavier prior.
   % The role of the Xavier prior is to keep X and and W*X equivariant, to increase
   % stability of the model and increase speed in our iterations.

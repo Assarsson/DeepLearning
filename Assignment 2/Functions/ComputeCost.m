@@ -12,7 +12,8 @@ function J = ComputeCost(X, Y, W, b, N, lambda)
   % INPUT:
   %   X -- The current data batch of size (d, N_batch)
   %   Y -- The current one-hot label representation of size (K, N_batch)
-  %   Theta - The cell array of parameters (W1, b1, W2, b2)
+  %   W -- The current weight cell of size (2,1) containing W1 and W2
+  %   b -- The current bias cell of size (2,1) containing b1 and b2
   %   N -- The current batch size, i.e. N == N_batch
   %   lambda -- The current scalar regularization parameter
   %

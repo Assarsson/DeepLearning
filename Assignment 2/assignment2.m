@@ -1,6 +1,10 @@
-addpath Functions/;
 addpath Datasets/cifar-10-batches-mat/;
-addpath Helpfunctions/;
+
+%Here lies the appended functions for the hand-in
+
+%Here ends the appending of functions for the hand-in
+
+
 
 [Xtrain, Ytrain, ytrain, Ntrain] = LoadBatch('data_batch_1.mat');
 [Xval, Yval, yval, Nval] = LoadBatch('data_batch_2.mat');
