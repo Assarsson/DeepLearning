@@ -31,7 +31,5 @@ function [W, b] = Initialize(d, layerData, initType)
   if (initType == 'xavier')
     variance = 1/d;
   end
-  for layer = 2:layers
-    W(layer, 1) = W{layer, 1}*sqrt(variance) + mu;
-  endfor
+  W = cellfun(@(x) x*sqrt(variance) + mu, W, 'UniformOutput', false);
 endfunction
