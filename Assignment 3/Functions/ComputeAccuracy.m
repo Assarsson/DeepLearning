@@ -14,9 +14,9 @@ function acc = ComputeAccuracy(X, y, W, b, N)
   % OUTPUT:
   %   acc -- The scalar accuracy as calculated by the fraction of correct/total.
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-
+  layers = length(W);
   cache = EvaluateClassifier(X, W, b);
-  [_,PMaxIdx] = max(cache{4,1});
+  [_,PMaxIdx] = max(cache{layers,1});
   acc = sum(y' == PMaxIdx);
   acc = acc/N;
 endfunction
