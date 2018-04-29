@@ -23,17 +23,19 @@ function cache = EvaluateClassifier(X, W, b)
   % OUTPUT:
   %   P -- the probability matrix for the classes of X of size (K, N)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-  cache = cell(4,1);
-  W1 = W{1, 1};
-  b1 = b{1, 1};
-  W2 = W{2, 1};
-  b2 = b{2, 1};
-  s1 = W1*X + b1;
-  h = Relu(s1);
-  s = W2*h + b2;
+  layers = length(W);
+  parameters = layers*2;
+  cache = cell(parameters,1);
+  s = W{1,1}*X + b{1,1};
+  h = Relu(s);
+  cache(1, 1) = s;
+  cache(2, 1) = h;
+  for layer = 2:layers
+    s = W{layer, 1}*h + b{layer, 1};
+    h = Relu(s);
+    cache(2*layer-1, 1) = s;
+    cache(2*layer, 1) = h;
+  endfor
   P = Softmax(s);
-  cache(1,1) = s1;
-  cache(2,1) = h;
-  cache(3,1) = s;
-  cache(4,1) = P;
+  cache(2*layers,1) = P;
 endfunction
