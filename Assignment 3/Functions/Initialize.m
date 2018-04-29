@@ -29,7 +29,8 @@ function [W, b] = Initialize(d, layerData, initType)
     b(layer, 1) = bias;
   endfor
   if (initType == 'xavier')
-    variance = 1/d;
+    W = cellfun(@(x) x*sqrt(1/length(x)) + mu, W, 'UniformOutput', false);
+    return;
   end
   W = cellfun(@(x) x*sqrt(variance) + mu, W, 'UniformOutput', false);
 endfunction

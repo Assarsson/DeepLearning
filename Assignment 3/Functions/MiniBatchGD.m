@@ -24,23 +24,13 @@ function [Wstar, bstar, Wm, bm] = MiniBatchGD(Xbatch, Ybatch,eta, W, b, Wm, bm, 
   %   Wm -- The updated weight momentum cell of size (2, 1) containing Wm1 and Wm2
   %   bm -- The updated bias momentum cell of size (2, 1) containing bm1 and bm2
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-  Wstar = cell(2,1);
-  bstar = cell(2,1);
+  layers = length(W);
+  Wstar = cell(layers,1);
+  bstar = cell(layers,1);
   cache = EvaluateClassifier(Xbatch, W, b);
   [grad_b, grad_W] = ComputeGradients(Xbatch, Ybatch, cache, W,b, N,lambda);
-  Wm(1,1) = rho*Wm{1,1} + eta*grad_W{1,1};
-  Wstar(1,1) = W{1,1}-Wm{1,1};
-  %Wstar(1,1) = W{1,1}-eta*grad_W{1,1};
-
-  Wm(2,1) = rho*Wm{2,1} + eta*grad_W{2,1};
-  Wstar(2,1) = W{2,1} - Wm{2,1};
-  %Wstar(2,1) = W{2,1}-eta*grad_W{2,1};
-
-  bm(1,1) = rho*bm{1,1} + eta*grad_b{1,1};
-  bstar(1,1) = b{1,1}-bm{1,1};
-  %bstar(1,1) = b{1,1}-eta*grad_b{1,1};
-
-  bm(2,1) = rho*bm{2,1} + eta*grad_b{2,1};
-  bstar(2,1) = b{2,1} - bm{2,1};
-  %bstar(2,1) = b{2,1}-eta*grad_b{2,1};
+  Wm = cellfun(@(x, y) rho*x + eta*y, Wm, grad_W, 'UniformOutput', false);
+  Wstar = cellfun(@(x, y) x-y, W, Wm, 'UniformOutput', false);
+  bm = cellfun(@(x, y) rho*x + eta*y, bm, grad_b, 'UniformOutput', false);
+  bstar = cellfun(@(x, y) x-y, b, bm, 'UniformOutput', false);
 endfunction
