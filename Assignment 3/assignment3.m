@@ -1,5 +1,5 @@
 addpath Functions/
 
-layerData = [50,10];
-[W, b] = Initialize(12, layerData, 'gaussi');
-disp(var(W{1,1}));
+layerData = [5,10];
+[W, b] = Initialize(5, layerData, 'gaussi');
+[Wm, bm] = InitializeMomentum(W, b);

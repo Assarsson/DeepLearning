@@ -8,11 +8,12 @@ function [Wm, bm] = InitializeMomentum(W, b)
   %   Wm -- A populated weight momentum cell of size (2, 1)
   %   bm -- A populated bias momentum cell of size (2, 1)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-  Wm = cell(2,1);
-  bm = cell(2,1);
-  Wm(1,1) = zeros(size(W{1,1}));
-  Wm(2,1) = zeros(size(W{2,1}));
-  bm(1,1) = zeros(size(b{1,1}));
-  bm(2,1) = zeros(size(b{2,1}));
-
+  layers = length(W);
+  Wm = cell(layers,1);
+  bm = cell(layers,1);
+  for layer = 1:layers
+    Wm(layer, 1) = zeros(size(W{layer, 1}));
+    bm(layer, 1) = zeros(size(b{layer, 1}));
+  endfor
+  
 endfunction
