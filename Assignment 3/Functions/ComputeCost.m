@@ -21,9 +21,10 @@ function J = ComputeCost(X, Y, W, b, N, lambda)
   %   J -- The scalar Cost-value.
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   J = 0;
-  W1 = W{1, 1};
-  W2 = W{2, 1};
+  layers = length(W);
   cache = EvaluateClassifier(X, W, b);
-  P = cache{4, 1};
-  J = -sum(log(sum(Y.*P)))/N + lambda*(sum(sumsq(W1)) + sum(sumsq(W2)));
+  P = cache{layers*2, 1};
+  weightCost = cellfun(@(x) sum(sumsq(x)), W, 'UniformOutPut', true);
+  regularization_cost = lambda*sum(weightCost);
+  J = -sum(log(sum(Y.*P)))/N + regularization_cost;
 endfunction
