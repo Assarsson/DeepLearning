@@ -32,13 +32,14 @@ function [grad_b,grad_W] = ComputeGradients(X, Y, cache, W, b, N, lambda)
       hi = cache{layer*2-2,1}(:,i);
       si = cache{layer*2-3,1}(:,i);
       grad_b{layer, 1} += g';
-      grad_W{layer, 1} += g'*hi'+2*lambda*W{layer,1};
+      grad_W{layer, 1} += g'*hi'; %+ 2*lambda*W{layer,1};
       g = g*W{layer, 1};
       g = g*diag(si > 0);
     endfor
     grad_b{1, 1} += g';
-    grad_W{1, 1} += g'*Xi';
+    grad_W{1, 1} += g'*Xi'; %+ 2*lambda*W{1,1};
   end
   grad_W = cellfun(@(x) x/N, grad_W, 'UniformOutput', false);
   grad_b = cellfun(@(x) x/N, grad_b, 'UniformOutput', false);
+  grad_W = cellfun(@(x, y) x + 2*lambda*y, grad_W, W, 'UniformOutput', false);
 endfunction
