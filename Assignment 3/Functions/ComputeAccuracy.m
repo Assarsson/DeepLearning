@@ -17,6 +17,5 @@ function acc = ComputeAccuracy(X, y, W, b, N)
   layers = length(W);
   cache = EvaluateClassifier(X, W, b);
   [_,PMaxIdx] = max(cache{2*layers,1});
-  acc = sum(y' == PMaxIdx);
-  acc = acc/N;
+  acc = sum(y' == PMaxIdx)/N;
 endfunction
