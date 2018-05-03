@@ -24,7 +24,7 @@ function J = ComputeCost(X, Y, W, b, N, lambda)
   layers = length(W);
   cache = EvaluateClassifier(X, W, b);
   P = cache{layers*2, 1};
-  weightCost = cellfun(@(x) sum(sumsq(x)), W, 'UniformOutPut', true);
+  weightCost = cellfun(@(x) sum(sumsq(x)), W, 'UniformOutput', true);
   regularization_cost = lambda*sum(weightCost);
   J = -sum(log(sum(Y.*P)))/N + regularization_cost;
 endfunction
