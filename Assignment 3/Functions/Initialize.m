@@ -18,15 +18,11 @@ function [W, b] = Initialize(d, layerData, initType)
   W = cell(layers,1);
   b = cell(layers,1);
 
-  W1 = double(randn(layerData(1), d));
-  b1 = double(zeros(layerData(1), 1));
-  W(1, 1) = W1;
-  b(1, 1) = b1;
+  W(1, 1) = double(randn(layerData(1), d));
+  b(1, 1) = double(zeros(layerData(1), 1));
   for layer = 2:layers
-    Weight = double(randn(layerData(layer), layerData(layer-1)));
-    bias = double(zeros(layerData(layer), 1));
-    W(layer, 1) = Weight;
-    b(layer, 1) = bias;
+    W(layer, 1) = double(randn(layerData(layer), layerData(layer-1)));
+    b(layer, 1) = double(zeros(layerData(layer), 1));
   endfor
   if (initType == 'xavier')
     W = cellfun(@(x) x*sqrt(1/length(x)) + mu, W, 'UniformOutput', false);

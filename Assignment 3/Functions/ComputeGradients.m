@@ -19,8 +19,8 @@ function [grad_b,grad_W] = ComputeGradients(X, Y, cache, W, b, N, lambda)
   layers = length(W);
   grad_W = cell(layers,1);
   grad_b = cell(layers,1);
-  grad_W = cellfun(@(x, y) zeros(size(y)), grad_W, W, 'UniformOutput', false);
-  grad_b = cellfun(@(x, y) zeros(size(y)), grad_b, b, 'UniformOutput', false);
+  grad_W = cellfun(@(x, y) double(zeros(size(y))), grad_W, W, 'UniformOutput', false);
+  grad_b = cellfun(@(x, y) double(zeros(size(y))), grad_b, b, 'UniformOutput', false);
   P = cache{layers*2, 1};
 
   for i=1:N

@@ -6,15 +6,15 @@ d = rows(X);
 K = rows(Y);
 
 %% change parameters here (i.e. dimensionality of operations)
-d = 150;
-N = 20;
+d = 100;
+N = 10;
 %Reshape the data
 X = X(1:d,1:N);
 Y = Y(:,1:N);
 y = y(1:N,:);
 
 %initialize network parameters
-layerData = [50, K]; %The same as in assignment 2
+layerData = [50,30,30, K]; %The same as in assignment 2
 lambda = 0;
 [W, b] = Initialize(d, layerData, 'gaussi');
 cache = EvaluateClassifier(X, W, b);
