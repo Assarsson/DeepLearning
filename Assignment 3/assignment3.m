@@ -2,14 +2,14 @@ addpath Functions/
 addpath Helpfunctions/
 [Xtrain, Ytrain, ytrain, Ntrain] = LoadAll({'data_batch_1.mat'});
 [Xval, Yval, yval, Nval] = LoadBatch('data_batch_5.mat');
-[Xtest, Ytest, ytest, ntest] = LoadBatch('test_batch.mat');
+[Xtest, Ytest, ytest, Ntest] = LoadBatch('test_batch.mat');
 ytrain = ytrain';
 [Xtrain, mean_of_Xtrain] = Preprocess(Xtrain);
 d = rows(Xtrain);
 K = rows(Ytrain);
-layerData = [50, 30, 30, K];
+layerData = [50, K];
 [W, b] = Initialize(d, layerData, 'gaussi');
-n_epochs = 130;
+n_epochs = 10;
 n_batch = 512;
 lambda = 0.000056;
 eta = 0.017260;
@@ -18,7 +18,7 @@ rho = 0.999;
 J_train = [];
 J_val = [];
 tic;
-message = ['Initializing training with ' num2str(N) ' examples and ' num2str(n_epochs) ' epochs...'];
+message = ['Initializing ' num2str(length(layerData)) '-layer training with ' num2str(N) ' examples and ' num2str(n_epochs) ' epochs...'];
 disp(message);
 for epoch = 1:n_epochs
   [Wm, bm] = InitializeMomentum(W, b);
@@ -32,20 +32,22 @@ for epoch = 1:n_epochs
   endfor
   costTrain = ComputeCost(Xtrain, Ytrain, W, b, N, lambda);
   accTrain = ComputeAccuracy(Xtrain, ytrain, W, b, N);
-  costMessage = ['Cost at epoch ' num2str(epoch) ': ' num2str(costTrain)];
-  disp(costMessage);
-  accMessage = ['Accuracy at epoch ' num2str(epoch) ': ' num2str(accTrain)];
-  disp(accMessage);
   if epoch == 1
     timeMessage = ['Estimated total run time in minutes: ' num2str(round(toc*n_epochs/60))];
     disp(timeMessage);
   endif
+  costMessage = ['Cost at epoch ' num2str(epoch) ': ' num2str(costTrain)];
+  disp(costMessage);
+  accMessage = ['Accuracy at epoch ' num2str(epoch) ': ' num2str(accTrain)];
+  disp(accMessage);
   J_train = [J_train costTrain];
   costVal = ComputeCost(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), Yval, W, b, Nval, lambda);
   J_val = [J_val costVal];
 endfor
 
 graphics_toolkit gnuplot;
+finalAcc = ['Final model accuracy is: ' num2str(ComputeAccuracy(Xtest, ytest, W, b, Ntest)*100) ' %'];
+disp(finalAcc);
 fig = figure();
 set(fig, 'visible', 'off');
 set(0, 'defaultaxesfontname', 'Helvetica');
