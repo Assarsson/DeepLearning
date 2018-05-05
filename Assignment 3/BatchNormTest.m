@@ -1,0 +1,26 @@
+addpath BatchNormalize/
+[X, Y, y, N] = LoadBatch('data_batch_1.mat');
+d = rows(X);
+K = rows(Y);
+
+%% change parameters here (i.e. dimensionality of operations)
+d = 100;
+N = 3;
+%Reshape the data
+X = X(1:d,1:N);
+Y = Y(:,1:N);
+y = y(1:N,:);
+
+%initialize network parameters
+layerData = [50, K]; %The same as in assignment 2
+lambda = 0;
+[W, b] = Initialize(d, layerData, 'gaussi');
+[cache, mus, vs] = EvaluateClassifier(X, W, b);
+[grad_b, grad_W] = ComputeGradients(X, Y, cache, mus, vs, W, b, N, lambda);
+
+disp('size of BNcache parameters: ');
+cellfun(@(x) disp(size(x)), mus, 'UniformOutput', false);
+disp('size of b');
+cellfun(@(x) disp(size(x)), grad_b, 'UniformOutput', false);
+disp('size of W');
+cellfun(@(x) disp(size(x)), grad_W, 'UniformOutput', false);
