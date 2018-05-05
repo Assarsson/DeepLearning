@@ -1,5 +1,6 @@
-addpath Functions/
+addpath BatchNormalize/
 addpath Helpfunctions/
+addpath Datasets/cifar-10-batches-mat/
 [Xtrain, Ytrain, ytrain, Ntrain] = LoadAll({'data_batch_1.mat'});
 [Xval, Yval, yval, Nval] = LoadBatch('data_batch_5.mat');
 [Xtest, Ytest, ytest, Ntest] = LoadBatch('test_batch.mat');
