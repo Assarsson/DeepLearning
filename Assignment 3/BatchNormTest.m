@@ -24,3 +24,5 @@ disp('size of b');
 cellfun(@(x) disp(size(x)), grad_b, 'UniformOutput', false);
 disp('size of W');
 cellfun(@(x) disp(size(x)), grad_W, 'UniformOutput', false);
+disp('value of b');
+cellfun(@(x) disp(x), grad_b, 'UniformOutput', false);

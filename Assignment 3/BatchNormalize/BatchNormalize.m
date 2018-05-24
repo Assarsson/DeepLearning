@@ -11,5 +11,5 @@ function s = BatchNormalize(s, mu, v)
 %
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 epsilon = 1e-5;
-s = 1./sqrt(diag(v + epsilon))*(s-mu);
+s = diag(v+epsilon)^(-0.5)*(s-mu);
 endfunction

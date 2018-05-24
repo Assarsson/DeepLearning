@@ -13,7 +13,7 @@ function [X, Y, y, N] = LoadBatch(fileName)
   %   N -- Scalar value with value N. For readibility in subs
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   warning('off','all');
-  %addpath Datasets/cifar-10-batches-mat/;
+  addpath Datasets/cifar-10-batches-mat/;
   inputFile = load(fileName);
   X = im2double(inputFile.data)';
   y = double(inputFile.labels) +1;
