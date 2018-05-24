@@ -1,4 +1,5 @@
 addpath BatchNormalize/
+addpath Helpfunctions/
 [X, Y, y, N] = LoadBatch('data_batch_1.mat');
 d = rows(X);
 K = rows(Y);
@@ -17,7 +18,10 @@ lambda = 0;
 [W, b] = Initialize(d, layerData, 'gaussi');
 [cache, mus, vs] = EvaluateClassifier(X, W, b);
 [grad_b, grad_W] = ComputeGradients(X, Y, cache, mus, vs, W, b, N, lambda);
+[grad_b_n, grad_W_n] = ComputeGradsNumSlow(X, Y, W, b, N, lambda, 1e-5);
 
+disp('differences in the bias gradients: ');
+cellfun(@(x, y) disp(GradChecker(x, y)), grad_b, grad_b_n, 'UniformOutput', false);
 disp('size of BNcache parameters: ');
 cellfun(@(x) disp(size(x)), mus, 'UniformOutput', false);
 disp('size of b');
