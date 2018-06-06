@@ -22,8 +22,7 @@ function J = ComputeCost(X, Y, W, b, N, lambda)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   J = 0;
   layers = length(W);
-  [cache, mus, vs] = EvaluateClassifier(X, W, b);
-  P = cache{layers*2, 1};
+  [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b);
   weightCost = cellfun(@(x) sum(sumsq(x)), W, 'UniformOutput', true);
   regCost = lambda*sum(weightCost);
   J = -sum(log(sum(Y.*P)))/N + regCost;
