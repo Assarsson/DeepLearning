@@ -1,4 +1,4 @@
-function [grad_b,grad_W] = ComputeGradients(X, Y, cache, mus, vs, W, b, N, lambda)
+function [grad_b,grad_W] = ComputeGradients(X, Y, P, S, Shat, H, mus, vs, W, b, N, lambda)
   % ComputeGradients computes the gradients of W and b as defined by differentiating
   % the cost function with respects to the node in the computational graph and traversing it
   % likeso, until we reach the parameter variable of interest. As we have a 2-layer network
@@ -21,34 +21,37 @@ function [grad_b,grad_W] = ComputeGradients(X, Y, cache, mus, vs, W, b, N, lambd
   grad_b = cell(layers,1);
   grad_W = cellfun(@(x, y) double(zeros(size(y))), grad_W, W, 'UniformOutput', false);
   grad_b = cellfun(@(x, y) double(zeros(size(y))), grad_b, b, 'UniformOutput', false);
-  P = cache{layers*2, 1};
+  g = cell(N, 1);
   for i=1:N
-    Xi = X(:,i);
     Yi = Y(:,i);
     Pi = P(:,i);
-    g = -(Yi-Pi)'; % We missed a f****** minus sign.
-    hi = cache{layers*2-2,1}(:,1);
-    s = cache{layers*2-3,1};
-    si = s(:,i);
-    grad_b{layers,1} += g';
-    grad_W{layers, 1} +=g'*hi';
-    g = g*W{layers, 1};
-    g = g*diag(si > 0);
-    for layer = layers-1:-1:2
-      hi = cache{layer*2-2,1}(:,i);
-      g = BatchNormBackPass(g, s,si, mus{layer}, vs{layer}, N);
-      s = cache{layer*2-3,1};
-      si = s(:,i);
-      grad_b{layer, 1} += g';
-      grad_W{layer, 1} += g'*hi'; %+ 2*lambda*W{layer,1};
-      g = g*W{layer, 1};
-      g = g*diag(si > 0);
-    endfor
-    g = BatchNormBackPass(g, s, si, mus{1}, vs{1}, N);
-    grad_b{1, 1} += g';
-    grad_W{1, 1} += g'*Xi'; %+ 2*lambda*W{1,1};
+    g{i} = -(Yi-Pi)'; % We missed a f****** minus sign.
+    hi = H{layers-1,1}(:,i);
+    si = S{layers-1,1}(:,i);
+    grad_b{layers,1} += g{i}';
+    grad_W{layers,1} += g{i}'*hi';
+    g{i} = g{i}*W{layers, 1};
+    g{i} = g{i}*diag(si > 0);
   end
-  grad_W = cellfun(@(x) x/N, grad_W, 'UniformOutput', false);
+  %grad_W{layers, 1} = grad_W{layers, 1}/N + 2*lambda*W{layers, 1};
+  %grad_b{layers, 1} = grad_b{layers,1}/N;
+  for layer = layers-1:-1:2
+    g = BatchNormBackPass(g, S{layer}, mus{layer}, vs{layer}, N);
+    h = H{layer-1,1};
+    for i = 1:N
+      grad_b{layer, 1} += g{i}';
+      grad_W{layer, 1} += g{i}'*h(:,i)'; %+ 2*lambda*W{layer,1};
+      g{i} = g{i}*W{layer, 1};
+      si = S{layer-1,1}(:,i);
+      g{i} = g{i}*diag(si > 0);
+    endfor
+  endfor
+  g = BatchNormBackPass(g, S{1}, mus{1}, vs{1}, N);
+  for i = 1:N
+    grad_b{1, 1} += g{i}';
+    grad_W{1, 1} += g{i}'*X(:,i)';
+  endfor
   grad_b = cellfun(@(x) x/N, grad_b, 'UniformOutput', false);
-  grad_W = cellfun(@(x, y) x + 2*lambda*y, grad_W, W, 'UniformOutput', false);
+  grad_W = cellfun(@(x, y) x/N + 2*lambda*y, grad_W, W, 'UniformOutput', false);
+
 endfunction
