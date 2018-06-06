@@ -1,4 +1,4 @@
-function J = ComputeCost(X, Y, W, b, N, lambda, mav, vav)
+function J = ComputeCost(X, Y, W, b, N, lambda, varargin)
   % ComputeCost computes the total cost of generating our guessed distribution
   % from the correct distribution of labels, with a cross-entropy loss and
   % and a L2-regularization-term. As the Crossentropy between P and y can be
@@ -22,7 +22,11 @@ function J = ComputeCost(X, Y, W, b, N, lambda, mav, vav)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   J = 0;
   layers = length(W);
-  [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b, mav, vav);
+  if (length(varargin) == 0)
+    [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b);
+  else
+    [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b, varargin{1,1}, varargin{1,2});
+  endif
   weightCost = cellfun(@(x) sum(sumsq(x)), W, 'UniformOutput', true);
   regCost = lambda*sum(weightCost);
   J = -sum(log(sum(Y.*P)))/N + regCost;
