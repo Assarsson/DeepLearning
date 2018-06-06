@@ -13,7 +13,7 @@ Y = Y(:,1:N);
 y = y(1:N,:);
 
 %initialize network parameters
-layerData = [50, K]; %The same as in assignment 2
+layerData = [50, 30,30, K]; %The same as in assignment 2
 lambda = 0;
 [W, b] = Initialize(d, layerData, 'gaussi');
 [P, S,Shat, H, mus, vs] = EvaluateClassifier(X, W, b);
