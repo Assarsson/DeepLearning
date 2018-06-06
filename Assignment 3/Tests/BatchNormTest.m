@@ -5,8 +5,8 @@ d = rows(X);
 K = rows(Y);
 
 %% change parameters here (i.e. dimensionality of operations)
-d = 20;
-N = 2;
+d = 10;
+N = 5;
 %Reshape the data
 X = X(1:d,1:N);
 Y = Y(:,1:N);
@@ -16,7 +16,7 @@ y = y(1:N,:);
 layerData = [50,30, K]; %The same as in assignment 2
 lambda = 0;
 [W, b] = Initialize(d, layerData, 'gaussi');
-[P, S,Shat, H, mus, vs] = EvaluateClassifier(X, W, b);
+[P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b);
 [grad_b, grad_W] = ComputeGradients(X, Y, P,S,Shat,H, mus, vs, W, b, N, lambda);
 [grad_b_n, grad_W_n] = ComputeGradsNumSlow(X, Y, W, b, N, lambda, 1e-5);
 
@@ -31,3 +31,7 @@ disp('size of b');
 cellfun(@(x) disp(size(x)), grad_b, 'UniformOutput', false);
 disp('size of W');
 cellfun(@(x) disp(size(x)), grad_W, 'UniformOutput', false);
+disp('grad_b-values');
+cellfun(@(x) disp(x), grad_b, 'UniformOutput', false);
+disp('grad_b_n-values');
+cellfun(@(x) disp(x), grad_b_n, 'UniformOutput', false);
