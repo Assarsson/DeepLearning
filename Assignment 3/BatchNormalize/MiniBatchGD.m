@@ -1,4 +1,4 @@
-function [Wstar, bstar, Wm, bm] = MiniBatchGD(Xbatch, Ybatch,eta, W, b, Wm, bm, N,lambda, rho)
+function [Wstar, bstar, Wm, bm, mav, vav] = MiniBatchGD(Xbatch, Ybatch,eta, W, b, Wm, bm, N,lambda, rho, mav, vav, alph)
   % MiniBatchGD performs the entire forward and backward pass.
   % It divides the dataset (X, Y)-pairs into batches and computes
   % the forward pass to generate a batch-determined class probability distribution
@@ -25,9 +25,15 @@ function [Wstar, bstar, Wm, bm] = MiniBatchGD(Xbatch, Ybatch,eta, W, b, Wm, bm, 
   %   bm -- The updated bias momentum cell of size (2, 1) containing bm1 and bm2
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   layers = length(W);
-  Wstar = cell(layers,1);
-  bstar = cell(layers,1);
   [P, S, Shat, H, mus, vs] = EvaluateClassifier(Xbatch, W, b);
+  if (size(mav{1,1}, 1) == 0)
+    mav = mus;
+    vav = vs;
+  else
+    mav = cellfun(@(x, y) alph*x + (1-alph)*y, mav, mus, 'UniformOutput', false);
+    vav = cellfun(@(x, y) alph*x + (1-alph)*y, vav, vs, 'UniformOutput', false);
+  endif
+
   [grad_b, grad_W] = ComputeGradients(Xbatch, Ybatch, P, S, Shat, H, mus, vs, W, b, N, lambda);
   Wm = cellfun(@(x, y) rho*x + eta*y, Wm, grad_W, 'UniformOutput', false);
   Wstar = cellfun(@(x, y) x-y, W, Wm, 'UniformOutput', false);
