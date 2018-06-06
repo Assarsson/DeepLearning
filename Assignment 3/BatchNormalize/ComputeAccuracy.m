@@ -1,4 +1,4 @@
-function acc = ComputeAccuracy(X, y, W, b, N)
+function acc = ComputeAccuracy(X, y, W, b, N, mav, vav)
   % ComputeAccuracy computes the proportion of correct guessed classes
   % of total classes tried. It sums the list of instances where y - facit
   % is equal to our guessed class, extracted as the max prob-value from our
@@ -15,7 +15,7 @@ function acc = ComputeAccuracy(X, y, W, b, N)
   %   acc -- The scalar accuracy as calculated by the fraction of correct/total.
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   layers = length(W);
-  [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b);
+  [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b, mav, vav);
   [_,PMaxIdx] = max(P);
   acc = sum(y' == PMaxIdx)/N;
 endfunction
