@@ -27,7 +27,7 @@ function [grad_b,grad_W] = ComputeGradients(X, Y, P, S, Shat, H, mus, vs, W, b, 
     Pi = P(:,i);
     g{i} = -(Yi-Pi)'; % We missed a f****** minus sign.
     hi = H{layers-1,1}(:,i);
-    si = S{layers-1,1}(:,i);
+    si = Shat{layers-1,1}(:,i);
     grad_b{layers,1} += g{i}';
     grad_W{layers,1} += g{i}'*hi';
     g{i} = g{i}*W{layers, 1};
@@ -35,21 +35,23 @@ function [grad_b,grad_W] = ComputeGradients(X, Y, P, S, Shat, H, mus, vs, W, b, 
   end
   %grad_W{layers, 1} = grad_W{layers, 1}/N + 2*lambda*W{layers, 1};
   %grad_b{layers, 1} = grad_b{layers,1}/N;
-  for layer = layers-1:-1:2
+  for layer = layers-1:-1:1
+    disp(layer);
     g = BatchNormBackPass(g, S{layer}, mus{layer}, vs{layer}, N);
-    h = H{layer-1,1};
+    if (layer == 1)
+      h = X;
+    else
+      h = H{layer-1,1};
+    endif
     for i = 1:N
       grad_b{layer, 1} += g{i}';
-      grad_W{layer, 1} += g{i}'*h(:,i)'; %+ 2*lambda*W{layer,1};
-      g{i} = g{i}*W{layer, 1};
-      si = S{layer-1,1}(:,i);
-      g{i} = g{i}*diag(si > 0);
+      grad_W{layer, 1} += g{i}'*h(:,i)';
+      if (layer != 1)%+ 2*lambda*W{layer,1};
+        g{i} = g{i}*W{layer, 1};
+        si = Shat{layer-1,1}(:,i);
+        g{i} = g{i}*diag(si > 0);
+      endif
     endfor
-  endfor
-  g = BatchNormBackPass(g, S{1}, mus{1}, vs{1}, N);
-  for i = 1:N
-    grad_b{1, 1} += g{i}';
-    grad_W{1, 1} += g{i}'*X(:,i)';
   endfor
   grad_b = cellfun(@(x) x/N, grad_b, 'UniformOutput', false);
   grad_W = cellfun(@(x, y) x/N + 2*lambda*y, grad_W, W, 'UniformOutput', false);
