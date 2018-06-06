@@ -1,4 +1,4 @@
-function [cache, mus, vs] = EvaluateClassifier(X, W, b)
+function [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b, varargin)
   % EvaluateClassifier computes the two layers of our forward pass. It is described
   % classicaly by an affine transformation that consists of a linear map and bias term.
   % W*X "twists and turns" the data, whereas the bias term translates it.
@@ -23,23 +23,36 @@ function [cache, mus, vs] = EvaluateClassifier(X, W, b)
   % OUTPUT:
   %   P -- the probability matrix for the classes of X of size (K, N)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+  isTrain = length(varargin) == 0;
   layers = length(W);
   parameters = layers*2;
-  cache = cell(parameters,1);
-  mus = cell(layers, 1);
-  vs = cell(layers, 1);
-  for layer = 1:layers
+  S = cell(layers, 1);
+  Shat = cell(layers-1, 1);
+  H = cell(layers-1, 1);
+  if (isTrain)
+    mus = cell(layers, 1);
+    vs = cell(layers, 1);
+  else
+    mus = varargin{1}.mus;
+    vs = varargin{1}.vs;
+  endif
+
+  for layer = 1:(layers-1)
     s = W{layer, 1}*X + b{layer, 1};
-    mu = ComputeMean(s);
-    v = ComputeVariance(s,mu);
-    s = BatchNormalize(s, mu, v);
+    S(layer, 1) = s;
+    if (isTrain)
+      mu = ComputeMean(s);
+      mus(layer, 1) = mu;
+      v = ComputeVariance(s,mu);
+      vs(layer, 1) = v;
+    endif
+    s = BatchNormalize(s, mus{layer,1}, vs{layer,1});
+    Shat{layer, 1} = s;
     h = Relu(s);
-    mus(layer, 1) = mu;
-    vs(layer, 1) = v;
-    cache(2*layer-1, 1) = s;
-    cache(2*layer, 1) = h;
+    H(layer, 1) = h;
     X = h;
   endfor
+  s = W{layers, 1}*X + b{layers, 1};
+  S{layers, 1} = s;
   P = Softmax(s);
-  cache(2*layers,1) = P;
 endfunction
