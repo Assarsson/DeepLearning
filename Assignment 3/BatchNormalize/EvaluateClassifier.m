@@ -33,8 +33,8 @@ function [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b, varargin)
     mus = cell(layers, 1);
     vs = cell(layers, 1);
   else
-    mus = varargin{1}.mus;
-    vs = varargin{1}.vs;
+    mus = varargin{1,1};
+    vs = varargin{1,2};
   endif
 
   for layer = 1:(layers-1)
