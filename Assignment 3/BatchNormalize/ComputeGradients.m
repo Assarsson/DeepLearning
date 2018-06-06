@@ -36,7 +36,6 @@ function [grad_b,grad_W] = ComputeGradients(X, Y, P, S, Shat, H, mus, vs, W, b, 
   %grad_W{layers, 1} = grad_W{layers, 1}/N + 2*lambda*W{layers, 1};
   %grad_b{layers, 1} = grad_b{layers,1}/N;
   for layer = layers-1:-1:1
-    disp(layer);
     g = BatchNormBackPass(g, S{layer}, mus{layer}, vs{layer}, N);
     if (layer == 1)
       h = X;
