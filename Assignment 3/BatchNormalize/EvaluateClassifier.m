@@ -41,10 +41,8 @@ function [P, S, Shat, H, mus, vs] = EvaluateClassifier(X, W, b, varargin)
     s = W{layer, 1}*X + b{layer, 1};
     S(layer, 1) = s;
     if (isTrain)
-      mu = ComputeMean(s);
-      mus(layer, 1) = mu;
-      v = ComputeVariance(s,mu);
-      vs(layer, 1) = v;
+      mus(layer, 1) = ComputeMean(s);
+      vs(layer, 1) = ComputeVariance(s, mus{layer,1});
     endif
     s = BatchNormalize(s, mus{layer,1}, vs{layer,1});
     Shat{layer, 1} = s;
