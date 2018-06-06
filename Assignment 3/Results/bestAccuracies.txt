@@ -1,0 +1,11 @@
+# Created by Octave 4.2.2, Wed Jun 06 20:25:25 2018 CEST <FAssarsson@Fabians-MacBook-Pro.local>
+# name: bestAccuracies
+# type: sq_string
+# elements: 1
+# length: 151
+accuracy: 0.3667 for lambda 1e-06 and eta 0.02362
+accuracy: 0.3255 for lambda 0.001 and eta 0.013947
+accuracy: 0.3247 for lambda 0.1 and eta 0.0082356
+
+
+
