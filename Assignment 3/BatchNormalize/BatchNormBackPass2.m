@@ -6,6 +6,5 @@ function ng = BatchNormBackPass2(g, s, mu, v, batchSize)
   grad_v = cellfun(@(x, y) (y*Vb^(-3/2)*diag(x-mu))',s',g,'UniformOutput', false);
   grad_v = -1/2*sum([grad_v{:}], 2)'/batchSize;
   grad_mu = -sum([cellfun(@(x) (x*Vb^(-0.5))', g, 'UniformOutput', false){:}], 2)/batchSize;
-  ng = cellfun(@(x, y) y*Vb^(-0.5)+2/batchSize*grad_v*diag(x-mu) + grad_mu'/batchSize, s,g', 'UniformOutput', false);
-  g = cell2mat(g');
+  ng = cellfun(@(x, y) y*Vb^(-0.5)+2/batchSize*grad_v*diag(x-mu) + grad_mu'/batchSize, s',g, 'UniformOutput', false);
 endfunction
