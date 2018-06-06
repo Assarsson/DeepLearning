@@ -8,12 +8,21 @@ ytrain = ytrain';
 [Xtrain, mean_of_Xtrain] = Preprocess(Xtrain);
 d = rows(Xtrain);
 K = rows(Ytrain);
-layerData = [50, K];
+layerData = [50, 30, K];
 [W, b] = Initialize(d, layerData, 'gaussi');
-n_epochs = 10;
+n_epochs = 5;
 n_batch = 512;
-lambda = 0.000056;
-eta = 0.017260;
+no_etas = 4;
+no_lambdas = 5;
+etas = GenerateParams(-1.70,-1.0,no_etas);
+lambdas = GenerateParams(-4.7,-2.60,no_lambdas);
+titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.'];
+disp(titleText);
+%lambda = 0.000056;
+%eta = 0.017260;
+alph = 0.99;
+mav = cell(size(layerData));
+vav = cell(size(layerData));
 N = Ntrain;
 rho = 0.999;
 J_train = [];
@@ -21,41 +30,57 @@ J_val = [];
 tic;
 message = ['Initializing ' num2str(length(layerData)) '-layer training with ' num2str(N) ' examples and ' num2str(n_epochs) ' epochs...'];
 disp(message);
-for epoch = 1:n_epochs
-  [Wm, bm] = InitializeMomentum(W, b);
-  for j = 1:N/n_batch
-    j_start = (j-1)*n_batch + 1;
-    j_end = j*n_batch;
-    inds = j_start:j_end;
-    Xbatch = Xtrain(:,inds);
-    Ybatch = Ytrain(:,inds);
-    [W,b,Wm,bm] = MiniBatchGD(Xbatch, Ybatch, eta, W, b, Wm, bm, n_batch,lambda, rho);
-  endfor
-  costTrain = ComputeCost(Xtrain, Ytrain, W, b, N, lambda);
-  accTrain = ComputeAccuracy(Xtrain, ytrain, W, b, N);
-  if epoch == 1
-    timeMessage = ['Estimated total run time in minutes: ' num2str(round(toc*n_epochs/60))];
-    disp(timeMessage);
-  endif
-  costMessage = ['Cost at epoch ' num2str(epoch) ': ' num2str(costTrain)];
-  disp(costMessage);
-  accMessage = ['Accuracy at epoch ' num2str(epoch) ': ' num2str(accTrain)];
-  disp(accMessage);
-  J_train = [J_train costTrain];
-  costVal = ComputeCost(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), Yval, W, b, Nval, lambda);
-  J_val = [J_val costVal];
-endfor
+for eta = etas
+  for lambda = lambdas
+    [W, b] = Initialize(d, layerData, 'xavier');
+    J_train = [];
+    J_val = [];
+    tempAccuracies = [];
+    tic;
+    valCost = 10000;
+    iterator = 0;
+    for epoch = 1:n_epochs
+      [Wm, bm] = InitializeMomentum(W, b);
+      for j = 1:N/n_batch
+        j_start = (j-1)*n_batch + 1;
+        j_end = j*n_batch;
+        inds = j_start:j_end;
+        Xbatch = Xtrain(:,inds);
+        Ybatch = Ytrain(:,inds);
+        [W,b,Wm,bm,mav,vav] = MiniBatchGD(Xbatch, Ybatch, eta, W, b, Wm, bm, n_batch,lambda, rho, mav, vav, alph);
+      endfor
+      costTrain = ComputeCost(Xtrain, Ytrain, W, b, N, lambda, mav, vav);
+      accTrain = ComputeAccuracy(Xtrain, ytrain, W, b, N, mav, vav);
+      if epoch == 1
+        timeMessage = ['Estimated total run time in minutes: ' num2str(round(toc*n_epochs/60))];
+        disp(timeMessage);
+      endif
+      costMessage = ['Cost at epoch ' num2str(epoch) ': ' num2str(costTrain)];
+      disp(costMessage);
+      accMessage = ['Accuracy at epoch ' num2str(epoch) ': ' num2str(accTrain)];
+      disp(accMessage);
+      J_train = [J_train costTrain];
+      costVal = ComputeCost(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), Yval, W, b, Nval, lambda, mav, vav);
+      costValMessage = ['Validation cost at epoch ' num2str(epoch) ': ' num2str(costVal)];
+      accVal = ComputeAccuracy(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), yval, W, b, N, mav, vav);
+      costAccMessage = ['Validation accuracy at epoch ' num2str(epoch) ': ' num2str(accVal)];
+      disp(costValMessage);
+      disp(costAccMessage);
+      J_val = [J_val costVal];
+    endfor
 
-graphics_toolkit gnuplot;
-finalAcc = ['Final model accuracy is: ' num2str(ComputeAccuracy(Xtest, ytest, W, b, Ntest)*100) ' %'];
-disp(finalAcc);
-fig = figure();
-set(fig, 'visible', 'off');
-set(0, 'defaultaxesfontname', 'Helvetica');
-hold on;
-titleText = ['Cost with layers = ' num2str(length(layerData)) ' lambda = ' num2str(lambda) ' #epochs = ' num2str(n_epochs) ' #batches = ' num2str(n_batch) ' eta = ' num2str(eta) ' examples = ' num2str(N)];
-plot(1:n_epochs, J_train, 'b', 1:n_epochs, J_val, 'y');
-title(titleText);
-imageName = ['eta' num2str(eta) '+lambda' num2str(lambda) '.jpg'];
-legend('Training Cost', 'Validation Cost');
-print(imageName);
+    graphics_toolkit gnuplot;
+    finalAcc = ['Final model accuracy is: ' num2str(ComputeAccuracy(Xtest-repmat(mean_of_Xtrain,[1,size(Xtest,2)]), ytest, W, b, Ntest, mav, vav)*100) ' %'];
+    disp(finalAcc);
+    fig = figure();
+    set(fig, 'visible', 'off');
+    set(0, 'defaultaxesfontname', 'Helvetica');
+    hold on;
+    titleText = ['Cost with layers = ' num2str(length(layerData)) ' lambda = ' num2str(lambda) ' #epochs = ' num2str(n_epochs) ' #batches = ' num2str(n_batch) ' eta = ' num2str(eta) ' examples = ' num2str(N)];
+    plot(1:n_epochs, J_train, 'b', 1:n_epochs, J_val, 'y');
+    title(titleText);
+    imageName = ['eta' num2str(eta) '+lambda' num2str(lambda) '.jpg'];
+    legend('Training Cost', 'Validation Cost');
+    print(imageName);
+  endfor
+endfor
