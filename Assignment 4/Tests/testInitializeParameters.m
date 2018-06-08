@@ -3,14 +3,16 @@
 %!test
 %! addpath Functions/
 %! K = 10;
-%! m = 20;
-%! [RNN, x0, h0] = InitializeParameters(K, m);
-%! assert(size(RNN.b) == [m,1]);
+%! hp = GenerateHyperParameters();
+%! [RNN, x0, h0, X, Y] = InitializeParameters(K, hp);
+%! assert(size(RNN.b) == [hp.m,1]);
 %! assert(size(RNN.c) == [K,1]);
-%! assert(size(RNN.U) == [m,K]);
-%! assert(size(RNN.W) == [m,m]);
-%! assert(size(RNN.V) == [K,m]);
+%! assert(size(RNN.U) == [hp.m,K]);
+%! assert(size(RNN.W) == [hp.m,hp.m]);
+%! assert(size(RNN.V) == [K,hp.m]);
 %! assert(RNN.K == K);
-%! assert(RNN.m == m);
+%! assert(RNN.m == hp.m);
 %! assert(size(x0) == [K, 1]);
-%! assert(size(h0) == [m, 1]);
+%! assert(size(h0) == [hp.m, 1]);
+%! assert(size(X) == [K, hp.seqLength]);
+%! assert(size(Y) == [K, hp.seqLength]);
