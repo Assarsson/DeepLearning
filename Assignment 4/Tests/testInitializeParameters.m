@@ -4,7 +4,10 @@
 %! addpath Functions/
 %! K = 10;
 %! hp = GenerateHyperParameters();
-%! [RNN, x0, h0, X, Y] = InitializeParameters(K, hp);
+%! bookData = LoadBatch('goblet_book.txt');
+%! [bookChars, cToIx, ixToC, K] = Preprocess(bookData);
+%! hp.K = K;
+%! [RNN, x0, h0, X, Y] = InitializeParameters(K, hp, bookData, cToIx);
 %! assert(size(RNN.b) == [hp.m,1]);
 %! assert(size(RNN.c) == [K,1]);
 %! assert(size(RNN.U) == [hp.m,K]);
