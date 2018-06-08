@@ -34,6 +34,7 @@ function gradients = BackwardPass(RNN, X, Y, P, H, hp)
     gradients.U += dA(t, :)'*X(:, t)';
     gradients.b += dA(t, :)';
     if (t == 1)
+      #FIXME: Understand why H(:,hp.seqLength) doesn't work. Might need new input/outputvariable
       %gradients.W += dA(t, :)'*H(:,hp.seqLength)';
       gradients.W += dA(t, :)'*zeros(hp.m, 1)';
     else
