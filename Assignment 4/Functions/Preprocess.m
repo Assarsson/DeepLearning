@@ -1,5 +1,5 @@
 
-function [bookChars, cToIx, ixToC] = Preprocess(bookData)
+function [bookChars, cToIx, ixToC, K] = Preprocess(bookData)
   % This function acts as a preprocessing step for the data
   % It takes in the textdata and generates a vector of unique characters,
   % and two maps between the indices and the characters for later use.
@@ -14,6 +14,7 @@ function [bookChars, cToIx, ixToC] = Preprocess(bookData)
   % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   bookChars = unique(bookData);
   cs = bookChars;
+  K = length(bookChars);
   cToIx = struct();
   ixToC = struct();
   for c = cs
