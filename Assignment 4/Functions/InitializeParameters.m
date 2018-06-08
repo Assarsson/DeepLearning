@@ -5,6 +5,8 @@ function [RNN, x0, h0] = InitializeParameters(K, m)
   RNN.U = randn(m, K)*sigma;
   RNN.W = randn(m, m)*sigma;
   RNN.V = randn(K, m)*sigma;
+  RNN.K = K;
+  RNN.m = m;
   x0 = zeros(K, 1);
   h0 = zeros(m, 1);
 endfunction
