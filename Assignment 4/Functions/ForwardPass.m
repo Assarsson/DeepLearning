@@ -10,8 +10,8 @@ function [P, H, J] = ForwardPass(RNN, X, Y, h0, hp)
     ot = RNN.V*ht + RNN.c;
     pt = Softmax(ot);
     P(:, t) = pt;
-    H(:, t) = h;
     h = ht;
+    H(:, t) = h;
   endfor
 
   J = ComputeCost(Y, P);
