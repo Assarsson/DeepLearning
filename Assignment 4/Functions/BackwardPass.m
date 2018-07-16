@@ -1,4 +1,4 @@
-function gradients = BackwardPass(RNN, X, Y, P, H, hp)
+function gradients = BackwardPass(RNN, X, Y, P, H, hp, hprev)
   %initialize the matrices of intermediate vectorial gradients
   dO = zeros(hp.seqLength, hp.K); %for all ot's
   dH = zeros(hp.seqLength, hp.m); %for all ht's
@@ -35,8 +35,8 @@ function gradients = BackwardPass(RNN, X, Y, P, H, hp)
     gradients.b += dA(t, :)';
     if (t == 1)
       #FIXME: Understand why H(:,hp.seqLength) doesn't work. Might need new input/outputvariable
-      %gradients.W += dA(t, :)'*H(:,hp.seqLength)';
-      gradients.W += dA(t, :)'*zeros(hp.m, 1)';
+      gradients.W += dA(t, :)'*hprev';
+      %gradients.W += dA(t, :)'*zeros(hp.m, 1)';
     else
       gradients.W += dA(t, :)'*H(:, t-1)';
     endif
