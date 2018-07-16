@@ -7,20 +7,24 @@ function hp = GenerateHyperParameters(varargin)
     hp.eta = 0.1;
     hp.seqLength = 25;
     hp.epsilon = 1e-8;
+    hp.epochs = 10;
   elseif (length(varargin) == 1)
     hp.m = varargin{1};
     hp.eta = 0.1;
     hp.seqLength = 25;
     hp.epsilon = 1e-8;
+    hp.epochs = 10;
   elseif (length(varargin) == 2)
     hp.m = varargin{1};
     hp.eta = varargin{2};
     hp.seqLength = 25;
     hp.epsilon = 1e-8;
+    hp.epochs = 10;
   else
     hp.m = varargin{1};
     hp.eta = varargin{2};
     hp.seqLength = varargin{3};
     hp.epsilon = 1e-8;
+    hp.epochs = 10;
   end
 endfunction
