@@ -7,6 +7,7 @@ function [RNN, x0, h0, X, Y] = InitializeParameters(K, hp, bookData, cToIx)
   RNN.V = randn(K, hp.m)*sigma;
   RNN.K = K;
   RNN.m = hp.m;
+  [~, RNN.N] = size(bookData);
   x0 = zeros(K, 1);
   h0 = zeros(hp.m, 1);
   X = zeros(K, hp.seqLength);
