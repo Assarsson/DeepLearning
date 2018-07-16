@@ -68,4 +68,5 @@ function RNN = MiniBatchGD(X, RNN, hp)
   for i = 1:1000
     message(i) = RNN.ixToC.(num2str(find(Y(:,i) == 1)));
   end
+  message
 endfunction
