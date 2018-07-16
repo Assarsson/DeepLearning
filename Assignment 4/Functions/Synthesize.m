@@ -1,7 +1,7 @@
 function [P, H, Y] = Synthesize(RNN, h0, x0, n)
 
   h = h0;
-  x = x0;
+  x = x0(:,1);
   P = zeros(RNN.K, n); %Probability scores for the classes
   H = zeros(RNN.m, n); %intermittent hidden representations
   Y = zeros(RNN.K, n); %one-hot vector of output
