@@ -1,4 +1,4 @@
-function [P, H, J] = ForwardPass(RNN, X, Y, h0, hp)
+function [P, H, J, hout] = ForwardPass(RNN, X, Y, h0, hp)
   P = zeros(hp.K, hp.seqLength);
   H = zeros(hp.m, hp.seqLength);
   h = h0;
@@ -13,6 +13,6 @@ function [P, H, J] = ForwardPass(RNN, X, Y, h0, hp)
     h = ht;
     H(:, t) = h;
   endfor
-
+  hout = H(:,hp.seqLength);
   J = ComputeCost(Y, P);
 endfunction
