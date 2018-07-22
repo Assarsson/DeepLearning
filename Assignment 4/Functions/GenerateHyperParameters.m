@@ -15,7 +15,7 @@ function hp = GenerateHyperParameters(varargin)
   if (defaultParams)
     hp.m = 100;
     hp.eta = 0.1;
-    hp.seqLength = 25;
+    hp.seqLength = 50;
     hp.epsilon = 1e-8;
     hp.epochs = 10;
   elseif (length(varargin) == 1)

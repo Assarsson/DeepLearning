@@ -233,7 +233,7 @@ function RNN = MiniBatchGD(X, RNN, hp)
       else
         smooth_loss = .999*smooth_loss + 0.001*J;
       end
-      e += hp.seqLength;
+      e += hp.seqLength/2;
       if(mod(count, 500) == 0)
         msg = ['loss at epoch ' num2str(epoch) ' and iteration ' num2str(count)];
         disp(msg);
@@ -337,7 +337,13 @@ for i=1:n
 end
 endfunction
 
-
+function allBookData = LoadAll(fileList)
+  allBookData = [];
+  for i=1:length(fileList)
+    bookData = LoadBatch(fileList{i});
+    allBookData = [allBookData bookData];
+  endfor
+endfunction
 
 
 
@@ -346,9 +352,12 @@ endfunction
 
 
 fileName = 'goblet_book.txt';
-bookData = LoadBatch(fileName);
+fileList = {'goblet_book.txt', 'azkaban_book.txt', 'phoenix_book.txt', 'halfblood_book.txt', 'hallows_book.txt'};
+bookData = LoadAll(fileList);
 disp('loaded book data');
-hp = GenerateHyperParameters();
+msg = ['The number of characters in the dataset are: ' num2str(length(bookData))];
+disp(msg);
+hp = GenerateHyperParameters(100, 0.1, 25);
 disp('generated hyper parameters');
 [bookChars, cToIx, ixToC, K] = Preprocess(bookData);
 disp('finished preprocessing data and creating index maps');
