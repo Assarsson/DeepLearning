@@ -1,4 +1,26 @@
 function gradients = BackwardPass(RNN, X, Y, P, H, hp, hprev)
+    % This function computes the gradients of the network in our
+    % backward update-pass. It takes in a RNN-structure, the input-data
+    % the shifted Y-data, a matrix of forwardpass probabilities, a matrix of
+    % the hidden states in the network, a parameter object and the last hidden state
+    % It initializes gradient parameters, computes the derivative of cross-entropy-loss
+    % and updates the final parameters, V and c from oht = Vht + c
+    % It then propagates through the non-linearity ht = tanh(at),
+    % and finally calculates the gradients for the at = Wht-1 + Uxt + b layer.
+    %
+    % INPUT:
+    %   RNN   -- An octace structure containing parameters and index-conversion-maps.
+    %   X     -- A one-hot-matrix on character level for the input data
+    %   Y     -- A one-hot-matrix on character level for the output data
+    %   P     -- A probability matrix of the distributions for each character probability
+    %   H     -- a matrix containing the m hidden states of the network passed forward
+    %   hp    -- An octave structure containing hyper parameters external to the learning algorithm
+    %   hprev -- The initialization hidden state, h0
+    %
+    % OUTPUT:
+    %   gradients -- An octave structure containing the gradients for V, c, W, U, b
+    % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
   %initialize the matrices of intermediate vectorial gradients
   dO = zeros(hp.seqLength, hp.K); %for all ot's
   dH = zeros(hp.seqLength, hp.m); %for all ht's
@@ -34,9 +56,7 @@ function gradients = BackwardPass(RNN, X, Y, P, H, hp, hprev)
     gradients.U += dA(t, :)'*X(:, t)';
     gradients.b += dA(t, :)';
     if (t == 1)
-      #FIXME: Understand why H(:,hp.seqLength) doesn't work. Might need new input/outputvariable
       gradients.W += dA(t, :)'*hprev';
-      %gradients.W += dA(t, :)'*zeros(hp.m, 1)';
     else
       gradients.W += dA(t, :)'*H(:, t-1)';
     endif
