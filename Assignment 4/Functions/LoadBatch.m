@@ -1,6 +1,4 @@
-
 function bookData = LoadBatch(fileName)
-
   % This function acts as a trivial .txt-load interface
   % It takes in a filename, opens it as long as it's stored in /Datasets,
   % dumps the data to a variable

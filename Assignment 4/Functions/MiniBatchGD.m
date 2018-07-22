@@ -1,4 +1,18 @@
 function RNN = MiniBatchGD(X, RNN, hp)
+  % This enveloping function performs the entire learning process end-to-end.
+  % It trains over epochs, performs forward and backward passes,
+  % utilizes the RMSProp optimization algorithm to descend over the gradients.
+  % It then synthesizes, at every 500 iterations, a 200 character long text snippet.
+  % Finally, it produces an error graph for each epoch for comparability.
+  %
+  % INPUT:
+  %   X     -- The one-hot-representation of our input data
+  %   RNN   -- An octave structure containing all network parameters and index-maps
+  %   hp    -- An octave structure containing all the hyper parameters
+  %
+  % OUTPUT:
+  %   RNN   -- An octave structure containing all network parameters and index-maps
+  % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   lossInit = true;
   smooth_loss = 0;
   count = 0;

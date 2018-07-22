@@ -1,5 +1,21 @@
 function [P, H, Y] = Synthesize(RNN, h0, x0, n)
-
+  % This enveloping function performs the entire learning process end-to-end.
+  % It trains over epochs, performs forward and backward passes,
+  % utilizes the RMSProp optimization algorithm to descend over the gradients.
+  % It then synthesizes, at every 500 iterations, a 200 character long text snippet.
+  % Finally, it produces an error graph for each epoch for comparability.
+  %
+  % INPUT:
+  %   RNN   -- An octave structure containing all network parameters and index-maps
+  %   h0    -- An initial hidden state
+  %   x0    -- An initial character
+  %   n     -- The length of the synthesized text
+  %
+  % OUTPUT:
+  %   P   -- Our final output probabilities
+  %   H   -- Final hidden states
+  %   Y   -- Our final one-hot encoded matrix of the generated text
+  % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
   h = h0;
   x = x0(:,1);
   P = zeros(RNN.K, n); %Probability scores for the classes

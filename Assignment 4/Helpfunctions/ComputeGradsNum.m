@@ -5,6 +5,7 @@ for f = fieldnames(RNN)'
     disp(['Field name: ' f{1} ]);
     num_grads.(f{1}) = ComputeGradNum(X, Y, f{1}, RNN, h, hp);
 end
+endfunction
 
 function grad = ComputeGradNum(X, Y, f, RNN, h, hp)
 
@@ -19,3 +20,4 @@ for i=1:n
     l2 = ComputeLoss(RNN_try, X, Y, hprev, hp);
     grad(i) = (l2-l1)/(2*h);
 end
+endfunction

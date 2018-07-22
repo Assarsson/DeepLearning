@@ -220,6 +220,9 @@ function RNN = MiniBatchGD(X, RNN, hp)
       Y_batch = X(:,e+1:e+hp.seqLength);
       [P, H, J, hout] = ForwardPass(RNN, X_batch, Y_batch, hprev, hp);
       gradients = BackwardPass(RNN, X_batch, Y_batch, P, H, hp, hprev);
+      for i = 1:length(f)
+        gradients.(f{i}) = max(min(gradients.(f{i}), 5), -5);
+      end
       hprev = hout;
       for i = 1:length(f)
         m.(f{i}) += gradients.(f{i}).^2;

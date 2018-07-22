@@ -411,7 +411,7 @@ endfunction
 
 
 
-[Xtrain, Ytrain, ytrain, Ntrain] = LoadAll({'data_batch_1.mat', 'data_batch_2.mat', 'data_batch_3.mat', 'data_batch_4.mat'});
+[Xtrain, Ytrain, ytrain, Ntrain] = LoadAll({'data_batch_1.mat'});
 [Xval, Yval, yval, Nval] = LoadBatch('data_batch_5.mat');
 [Xtest, Ytest, ytest, ntest] = LoadBatch('test_batch.mat');
 ytrain = ytrain';
@@ -433,8 +433,8 @@ etas = Generateparams(-1.70,-1.52,no_etas);
 lambdas = Generateparams(-4.7,-2.60,no_lambdas);
 titleText = ['searching over a total of ' num2str(no_etas*no_lambdas) ' parameters.'];
 disp(titleText);
-lambdas = [0.00023554];
-etas = [0.020815];
+lambdas = [1e-6];
+etas = [0.01, 0.1, 1];
 
 %%%% Gradient checking procedure
 %lambda = 0;
@@ -455,7 +455,6 @@ for lambda = lambdas
     J_val = [];
     tempAccuracies = [];
     tic;
-    valCost = 10000;
     iterator = 0;
     for i=1:n_epochs
       iterator += 1;
@@ -475,11 +474,6 @@ for lambda = lambdas
       costVal = ComputeCost(Xval-repmat(mean_of_Xtrain,[1,size(Xval,2)]), Yval, W, b, Nval, lambda);
       J_val = [J_val costVal];
       disp('current validation cost: '),disp(costVal);
-      disp('prior validation cost: '),disp(valCost);
-      if (valCost  < costVal)
-        break;
-      endif
-      valCost = costVal;
     endfor
     disp('Time for evaluating one parameter setting: ');
     toc;
