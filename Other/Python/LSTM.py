@@ -37,7 +37,7 @@ rawdata = readFiles(['goblet_book.txt'])
 characters, cToIx, ixToC, idxs = preProcess(rawdata)
 hp = generateHyperParameters()
 X, Y = generateDatasets(idxs, characters)
-dataset = tf.contrib.data.Dataset.from_tensor_slices(X)
+dataset = tf.data.Dataset.from_tensor_slices(X)
 
 #sequence generation
 net = tflearn.input_data(shape=[None,len(rawdata), len(characters)])
