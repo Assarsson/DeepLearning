@@ -32,22 +32,35 @@ def generateDatasets(idxs, characters):
 def initializeNetwork():
     return 0
 
-
-rawdata = readFiles(['goblet_book.txt'])
+print("reading in files...")
+fileList = ['goblet_book.txt']
+rawdata = readFiles(fileList)
+print("read in: {}!".format([file for file in fileList]))
+print("preprocessing data...")
 characters, cToIx, ixToC, idxs = preProcess(rawdata)
+print("generated alphabet and mapping structures!")
+print("generating hyper parameters...")
 hp = generateHyperParameters()
+print("generated hyper parameters!")
+print("generating dataset...")
 X, Y = generateDatasets(idxs, characters)
+print("generated dataset of size {}".format(len(X)))
 dataset = tf.data.Dataset.from_tensor_slices(X)
 
 #sequence generation
+print("building tensorflow model...")
 net = tflearn.input_data(shape=[None,len(rawdata), len(characters)])
 net = tflearn.lstm(net, 64)
 net = tflearn.dropout(net, 0.5)
-net = tflearn.fully_connected(net, len(characters), activation='softmax')
+net = tflearn.fully_connected(net,   len(characters), activation='softmax')
 net = tflearn.regression(net, optimizer = 'adam', loss = 'categorical_crossentropy')
 model = tflearn.SequenceGenerator(net, dictionary = cToIx, seq_maxlen = len(rawdata), clip_gradients = 5.0)
 X = np.reshape(X, (1, len(rawdata), len(characters)))
+print("model built!")
+print("fitting model...")
 model.fit(X, Y)
+print("model fitted!")
+print("generating sequence...")
 print(model.generate(10, temperature = 1.0, seq_seed = characters[10]))
 #[print(ixToC[np.where(x == 1)[0][0]]) for x in X[0:22]]
 #print("\n")
