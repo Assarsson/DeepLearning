@@ -35,8 +35,10 @@ model.fit(X, Y)
 print("model fitted!")
 print("generating sequence...")
 seed = random_sequence_from_textfile("Datasets/"+fileName, hp['seqLength'])
+print("sequence with temperature 1.0")
 print(model.generate(200, temperature = 1.0, seq_seed = seed))
-print(model.generate(200, temperature = 2.0, seq_seed = seed))
+print("sequence with temperature 0.5")
+print(model.generate(200, temperature = 0.5, seq_seed = seed))
 #[print(ixToC[np.where(x == 1)[0][0]]) for x in X[0:22]]
 #print("\n")
 #[print(ixToC[np.where(x == 1)[0][0]]) for x in Y[0:22]]
