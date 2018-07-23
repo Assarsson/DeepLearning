@@ -233,7 +233,7 @@ function RNN = MiniBatchGD(X, RNN, hp)
       else
         smooth_loss = .999*smooth_loss + 0.001*J;
       end
-      e += hp.seqLength/2;
+      e += hp.seqLength;
       if(mod(count, 500) == 0)
         msg = ['loss at epoch ' num2str(epoch) ' and iteration ' num2str(count)];
         disp(msg);
@@ -357,7 +357,7 @@ bookData = LoadAll(fileList);
 disp('loaded book data');
 msg = ['The number of characters in the dataset are: ' num2str(length(bookData))];
 disp(msg);
-hp = GenerateHyperParameters(100, 0.1, 25);
+hp = GenerateHyperParameters(400, 0.1, 25);
 disp('generated hyper parameters');
 [bookChars, cToIx, ixToC, K] = Preprocess(bookData);
 disp('finished preprocessing data and creating index maps');
