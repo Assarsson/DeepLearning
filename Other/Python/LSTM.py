@@ -18,16 +18,17 @@ def readFiles(fileName, hp, redun_step = 3):
 def generateHyperParameters(seqLength = 25, epochs = 10, genlen = 200, eta = 0.001, m = 128):
     hp = {'eta': eta, 'm': m, 'genlen': genlen, 'seqLength': seqLength}
     return hp
-def buildModel(hp, idxs):
+def buildModel(hp, idxs, layers):
     print("building tensorflow model...")
     net = tflearn.input_data(shape=[None,hp['seqLength'], len(idxs)])
     print("added input layer")
-    net = tflearn.lstm(net, hp['m'], return_seq = True)
-    print("added lstm layer")
-    net = tflearn.dropout(net, 0.3)
-    print("added dropout")
+    for layer in range(layers-1):
+        net = tflearn.lstm(net, hp['m'], return_seq = True)
+        print("added lstm layer")
+        net = tflearn.dropout(net, 0.3)
+        print("added dropout")
     net = tflearn.lstm(net, hp['m'])
-    print("added second lstm layer")
+    print("added final lstm layer")
     net = tflearn.dropout(net, 0.3)
     net = tflearn.fully_connected(net,   len(idxs), activation='softmax')
     print("added fully connected softmax")
@@ -44,7 +45,8 @@ def parseInputArguments():
     parser.add_argument('--genlen', type = int, dest = 'genlen', default = 200, help = "the length of the generated message")
     parser.add_argument('--seqlength', type = int, dest = 'seqLength', default = 25, help = 'training sequence length')
     parser.add_argument('--learningrate', type = float, dest = 'eta', default = 0.001, help = 'Learning rate for the model')
-    parser.add_argument('--load', type = boolean, dest = 'load', default = False, help = 'bool to indicate if loading a model or training')
+    parser.add_argument('--load', type = bool, dest = 'load', default = False, help = 'bool to indicate if loading a model or training')
+    parser.add_argument('--layers', type = int, dest = 'layers', default = 2, help = 'the number of layers to add to the LSTM-model')
     arguments = parser.parse_args()
     return arguments
 def sequenceGenerator(arguments, seed, model):
@@ -58,7 +60,7 @@ if __name__ == "__main__":
     arguments = parseInputArguments()
     hp = generateHyperParameters(arguments.seqLength, arguments.epochs, arguments.genlen, arguments.eta)
     X, Y, idxs, seed = readFiles(arguments.fileName, hp)
-    model = buildModel(hp, idxs)
+    model = buildModel(hp, idxs, arguments.layers)
     if arguments.load == False:
         print("fitting model...")
         model.fit(X, Y, n_epoch = arguments.epochs)
@@ -66,5 +68,5 @@ if __name__ == "__main__":
         model.save("{}_{}_{}.tfl".format(arguments.fileName, arguments.seqLength, arguments.epochs))
     else:
         print("loading model...")
-        model.load("Results/{}_{}_{}.tfl".format(arguments.fileName, arguments.seqLength, arguments.epochs), weights_only = True)
+        model.load("Results/{}_{}_{}.tfl".format(arguments.fileName, arguments.seqLength, arguments.epochs), weights_only=True)
     sequenceGenerator(arguments, seed, model)
