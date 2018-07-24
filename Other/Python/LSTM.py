@@ -16,7 +16,7 @@ def readFiles(fileName, hp):
         print("please choose a file that exists in the Dataset-folder")
         sys.exit(1)
 def generateHyperParameters(eta = 0.1, m = 100, seqLength = 25, epochs = 10):
-    hp = {'eta': eta, 'm': m, 'seqLength': seqLength, 'epochs': epochs}
+    hp = {'eta': eta, 'm': m}
     return hp
 def buildModel(hp, idxs):
     print("building tensorflow model...")
@@ -47,7 +47,7 @@ def parseFunction():
 def sequenceGenerator(arguments, seed):
     print("generating sequence...")
     print("sequence with temperature 1.0")
-    print(model.generate(arguments.genlen, temperature = 1.0, seq_seed = seed))
+    print(model.generate(arguments.genlen, temperature = 1.1, seq_seed = seed))
     print("sequence with temperature 0.5")
     print(model.generate(arguments.genlen, temperature = 0.5, seq_seed = seed))
 
