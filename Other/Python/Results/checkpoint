@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/ubuntu/DeepLearning/Other/Python/Results/LSTM for all_books.txt.tfl"
+all_model_checkpoint_paths: "/home/ubuntu/DeepLearning/Other/Python/Results/LSTM for all_books.txt.tfl"
