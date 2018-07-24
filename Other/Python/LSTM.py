@@ -42,7 +42,7 @@ def parseFunction():
     parser.add_argument('--epochs', type = int, dest = 'epochs', default = 10, help = "defines the number of epochs")
     parser.add_argument('--filename', type = str, dest = 'fileName', default = "goblet_book.txt", help = "define a file in the Datasets folder")
     parser.add_argument('--genlen', type = int, dest = 'genlen', default = 200, help = "the length of the generated message")
-    parser.add_argument('--seqlength' type = int, dest = 'seqLength', default = 25, help = 'training sequence length')
+    parser.add_argument('--seqlength', type = int, dest = 'seqLength', default = 25, help = 'training sequence length')
     arguments = parser.parse_args()
     return arguments
 def sequenceGenerator(arguments, seed):
