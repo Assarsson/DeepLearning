@@ -15,8 +15,8 @@ def readFiles(fileName, hp):
     except FileNotFoundError:
         print("please choose a file that exists in the Dataset-folder")
         sys.exit(1)
-def generateHyperParameters(eta = 0.1, m = 100, seqLength = 25, epochs = 10):
-    hp = {'eta': eta, 'm': m}
+def generateHyperParameters(seqLength = 25, epochs = 10, genlen = 200, eta = 0.01, m = 100):
+    hp = {'eta': eta, 'm': m, 'genlen': genlen}
     return hp
 def buildModel(hp, idxs):
     print("building tensorflow model...")
@@ -42,6 +42,7 @@ def parseFunction():
     parser.add_argument('--epochs', type = int, dest = 'epochs', default = 10, help = "defines the number of epochs")
     parser.add_argument('--filename', type = str, dest = 'fileName', default = "goblet_book.txt", help = "define a file in the Datasets folder")
     parser.add_argument('--genlen', type = int, dest = 'genlen', default = 200, help = "the length of the generated message")
+    parser.add_argument('--seqlength' type = int, dest = 'seqLength', default = 25, help = 'training sequence length')
     arguments = parser.parse_args()
     return arguments
 def sequenceGenerator(arguments, seed):
@@ -53,7 +54,7 @@ def sequenceGenerator(arguments, seed):
 
 if __name__ == "__main__":
     arguments = parseFunction()
-    hp = generateHyperParameters()
+    hp = generateHyperParameters(arguments.seqLength, arguments.epochs, arguments.genlen)
     X, Y, idxs, seed = readFiles(arguments.fileName, hp)
     model = buildModel(hp, idxs)
     print("fitting model...")
