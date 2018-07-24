@@ -16,7 +16,7 @@ def readFiles(fileName, hp):
         print("please choose a file that exists in the Dataset-folder")
         sys.exit(1)
 def generateHyperParameters(seqLength = 25, epochs = 10, genlen = 200, eta = 0.01, m = 100):
-    hp = {'eta': eta, 'm': m, 'genlen': genlen}
+    hp = {'eta': eta, 'm': m, 'genlen': genlen, 'seqLength': seqLength}
     return hp
 def buildModel(hp, idxs):
     print("building tensorflow model...")
